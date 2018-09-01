@@ -1,52 +1,61 @@
-
 package com.gmail.tt195361;
 
-import java.util.*;
+import java.util.Stack;
 
-public class ClosureElement extends RegexElement {
+class ClosureElement extends RegexElement {
 	
 	private final RegexElement _element;
 	
-	public ClosureElement(RegexElement element) {
+	ClosureElement(RegexElement element) {
 		_element = element;
 	}
 
 	@Override
-	public boolean oneMatch(ElementBuffer elemBuffer, StringBuffer strBuffer) {
-		Stack<BufferState> candidates = makeCandidates(elemBuffer, strBuffer);
+	boolean oneMatch(ElementBuffer elemBuffer, StringBuffer strBuffer) {
+		Stack<BufferState> strBufferCandidateStates =
+				makeStrBufferCandidateStates(elemBuffer, strBuffer);
 		
 		elemBuffer.moveNext();
-		BufferState savedElemBufferState = elemBuffer.saveState();
-		while (!candidates.empty()) {
-			elemBuffer.restoreState(savedElemBufferState);
-			strBuffer.restoreState(candidates.pop());
-			if (RegexMatcher.match(elemBuffer, strBuffer)) {
-				return true;
-			}
-		}
-		
-		return false;
+		return matchTheRestOfElements(elemBuffer, strBuffer, strBufferCandidateStates);
 	}
 	
-	private Stack<BufferState> makeCandidates(
+	private Stack<BufferState> makeStrBufferCandidateStates(
 			ElementBuffer elemBuffer, StringBuffer strBuffer) {
-		Stack<BufferState> candidates = new Stack<BufferState>();
+		Stack<BufferState> candidateStates = new Stack<BufferState>();
 		
-		pushCandidate(candidates, strBuffer);
+		pushCandidateState(candidateStates, strBuffer);
 		while (strBuffer.hasCurrent()) {
 			if (!_element.oneMatch(elemBuffer, strBuffer)) {
 				break;
 			}
 			
-			pushCandidate(candidates, strBuffer);
+			pushCandidateState(candidateStates, strBuffer);
 		}
 		
-		return candidates;
+		return candidateStates;
 	}
 	
-	private void pushCandidate(Stack<BufferState> candidates, StringBuffer strBuffer) {
+	private void pushCandidateState(
+			Stack<BufferState> candidates, StringBuffer strBuffer) {
 		BufferState state = strBuffer.saveState();
 		candidates.push(state);
+	}
+	
+	private boolean matchTheRestOfElements(
+			ElementBuffer elemBuffer, StringBuffer strBuffer,
+			Stack<BufferState> strBufferCandidateStates) {
+		BufferState savedElemBufferState = elemBuffer.saveState();
+		
+		while (!strBufferCandidateStates.empty()) {
+			elemBuffer.restoreState(savedElemBufferState);
+			strBuffer.restoreState(strBufferCandidateStates.pop());
+			
+			if (RegexMatcher.doMatch(elemBuffer, strBuffer)) {
+				return true;
+			}
+		}
+		
+		return false;
 	}
 
 	@Override

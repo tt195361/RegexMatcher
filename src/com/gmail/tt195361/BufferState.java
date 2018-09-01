@@ -1,14 +1,14 @@
 package com.gmail.tt195361;
 
-public class BufferState {
+class BufferState {
 
 	private final int _index;
 	
-	public BufferState(int index) {
+	BufferState(int index) {
 		_index = index;
 	}
 	
-	public int getIndex() {
+	int getIndex() {
 		return _index;
 	}
 }

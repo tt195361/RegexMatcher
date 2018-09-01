@@ -1,36 +1,43 @@
 package com.gmail.tt195361;
 
-public class StringBuffer {
+class StringBuffer {
 
 	private final String _str;
+	private final int _startIndex;
 	private final int _length;
 	private int _index;
 	
-	public StringBuffer(String str) {
+	StringBuffer(String str, int startIndex) {
 		_str = str;
+		_startIndex = startIndex;
 		_length = str.length();
-		_index = 0;
+		_index = startIndex;
 	}
 	
-	public boolean hasCurrent() {
+	String getMatchString() {
+		int matchLength = _index - _startIndex + 1;
+		return _str.substring(_startIndex, matchLength);
+	}
+	
+	boolean hasCurrent() {
 		return 0 <= _index && _index < _length;
 	}
 
-	public void moveNext() {
+	void moveNext() {
 		if (hasCurrent()) {
 			++_index;
 		}
 	}
 
-	public char getCurrent() {
+	char getCurrent() {
 		return _str.charAt(_index);
 	}
 	
-	public BufferState saveState() {
+	BufferState saveState() {
 		return new BufferState(_index);
 	}
 
-	public void restoreState(BufferState state) {
+	void restoreState(BufferState state) {
 		_index = state.getIndex();
 	}
 	
@@ -40,7 +47,7 @@ public class StringBuffer {
 			return "";
 		}
 		else {
-			return "StringBuffer: '" + _str.substring(_index) + "'";
+			return _str.substring(_index);
 		}
 	}
 }

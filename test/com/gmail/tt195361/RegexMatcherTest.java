@@ -1,40 +1,34 @@
 package com.gmail.tt195361;
 
+import org.junit.Test;
 import static org.junit.Assert.*;
 
-import org.junit.Test;
-import org.omg.CosNaming.IstringHelper;
-
 public class RegexMatcherTest {
-
-	@Test
-	public void testOneChar() {
-		ElementBuffer elemBuffer = new ElementBuffer(
-				new OneCharElement('a'));
-		check(elemBuffer, "a", true, "指定の文字ならマッチする");
-		check(elemBuffer, "b", false, "指定以外はマッチしない");
-	}
+	
+	private final String DontCare = null;
 	
 	@Test
-	public void testAnyChar() {
-		ElementBuffer elemBuffer = new ElementBuffer(
-				new AnyCharElement());
-		check(elemBuffer, "a", true, "どんな文字でもマッチする");
-		check(elemBuffer, "ｚ", true, "どんな文字でもマッチする");
-	}
-	
-	@Test
-	public void testClosure() {
-		ElementBuffer elemBuffer = new ElementBuffer(
-				new ClosureElement(new AnyCharElement()),
-				new OneCharElement('b'));
-		check(elemBuffer, "ababa", true, ".*b にマッチする");
+	public void testMatch() {
+		RegexElement[] elements = {
+			new OneCharElement('b'),
+			new ClosureElement(new AnyCharElement()),
+			new OneCharElement('b')
+		};
+		
+		check(elements, "ababa", true, "bab", "'ababa' と マッチする");
+		check(elements, "abaca", false, DontCare, "'abaca' はマッチしない");
 	}
 	
 	private void check(
-			ElementBuffer elemBuffer, String str, boolean expected, String message) {
-		StringBuffer strBuffer = new StringBuffer(str);
-		boolean actual = RegexMatcher.match(elemBuffer, strBuffer);
-		assertEquals(message, expected, actual);
+			RegexElement[] elements, String str,
+			boolean expectedResult, String expectedMatchString, String message) {
+		ElementBuffer elemBuffer = new ElementBuffer(elements);
+		RegexMatcher matcher = new RegexMatcher(elemBuffer);
+
+		boolean actualResult = matcher.match(str);
+		assertEquals(message, expectedResult, actualResult);
+
+		String actualMatchString = matcher.getMatchString();
+		assertEquals(message, expectedMatchString, actualMatchString);
 	}
 }
