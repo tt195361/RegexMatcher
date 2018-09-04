@@ -3,24 +3,25 @@ package com.gmail.tt195361;
 public class RegexMatcher {
 	
 	private final ElementBuffer _elemBuffer;
-	private String _matchString;
+	private final BufferState _initialElemBufferState;
 	
-	public RegexMatcher(ElementBuffer elemBuffer) {
-		_elemBuffer = elemBuffer;
+	public RegexMatcher(String pattern) {
+		_elemBuffer = RegexParser.parse(pattern);
+		_initialElemBufferState = _elemBuffer.saveState();
 	}
 	
-	public boolean match(String str) {
-		_matchString = null;
-		
-		for (int index = 0; index < str.length(); ++index) {
-			StringBuffer strBuffer = new StringBuffer(str, index);
+	public MatchResult match(String str) {
+		for (int startIndex = 0; startIndex < str.length(); ++startIndex) {
+			_elemBuffer.restoreState(_initialElemBufferState);
+			StringBuffer strBuffer = new StringBuffer(str, startIndex);
+			
 			if (doMatch(_elemBuffer, strBuffer)) {
-				_matchString = strBuffer.getMatchString();
-				return true;
+				String matchString = strBuffer.getMatchString();
+				return MatchResult.makeSuccessResult(startIndex, matchString);
 			}
 		}
 		
-		return false;
+		return MatchResult.makeFailResult();
 	}
 	
 	static boolean doMatch(ElementBuffer elemBuffer, StringBuffer strBuffer) {
@@ -38,9 +39,5 @@ public class RegexMatcher {
 		}
 
 		return true;
-	}
-	
-	public String getMatchString() {
-		return _matchString;
 	}
 }

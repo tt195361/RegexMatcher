@@ -9,6 +9,10 @@ class ClosureElement extends RegexElement {
 	ClosureElement(RegexElement element) {
 		_element = element;
 	}
+	
+	RegexElement getRegexElement() {
+		return _element;
+	}
 
 	@Override
 	boolean oneMatch(ElementBuffer elemBuffer, StringBuffer strBuffer) {

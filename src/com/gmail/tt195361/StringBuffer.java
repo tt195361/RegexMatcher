@@ -5,40 +5,51 @@ class StringBuffer {
 	private final String _str;
 	private final int _startIndex;
 	private final int _length;
-	private int _index;
+	private int _currentIndex;
 	
 	StringBuffer(String str, int startIndex) {
 		_str = str;
 		_startIndex = startIndex;
 		_length = str.length();
-		_index = startIndex;
+		_currentIndex = startIndex;
+	}
+	
+	boolean isStart() {
+		return _currentIndex == 0;
+	}
+	
+	boolean isLast() {
+		return _currentIndex == _length - 1;
+	}
+	
+	boolean isEnd() {
+		return _length <= _currentIndex;
 	}
 	
 	String getMatchString() {
-		int matchLength = _index - _startIndex + 1;
-		return _str.substring(_startIndex, matchLength);
+		return _str.substring(_startIndex, _currentIndex);
 	}
 	
 	boolean hasCurrent() {
-		return 0 <= _index && _index < _length;
+		return 0 <= _currentIndex && _currentIndex < _length;
 	}
 
 	void moveNext() {
 		if (hasCurrent()) {
-			++_index;
+			++_currentIndex;
 		}
 	}
 
 	char getCurrent() {
-		return _str.charAt(_index);
+		return _str.charAt(_currentIndex);
 	}
 	
 	BufferState saveState() {
-		return new BufferState(_index);
+		return new BufferState(_currentIndex);
 	}
 
 	void restoreState(BufferState state) {
-		_index = state.getIndex();
+		_currentIndex = state.getIndex();
 	}
 	
 	@Override
@@ -47,7 +58,7 @@ class StringBuffer {
 			return "";
 		}
 		else {
-			return _str.substring(_index);
+			return _str.substring(_currentIndex);
 		}
 	}
 }

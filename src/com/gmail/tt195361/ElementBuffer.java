@@ -1,12 +1,18 @@
 package com.gmail.tt195361;
 
+import java.util.List;
+
 class ElementBuffer {
 
 	private final RegexElement[] _elements;
 	private final int _length;
 	private int _index;
 	
-	ElementBuffer(RegexElement...elements) {
+	ElementBuffer(List<RegexElement> elemList) {
+		this(elemList.toArray(new RegexElement[0]));
+	}
+	
+	private ElementBuffer(RegexElement[] elements) {
 		_elements = elements;
 		_length = elements.length;
 		_index = 0;
@@ -38,5 +44,9 @@ class ElementBuffer {
 	public String toString() {
 		RegexElement current = getCurrent();
 		return String.format("_index=%d, current=%s", _index, current.toString());
+	}
+	
+	static ElementBuffer makeForUnitTest(RegexElement...elements) {
+		return new ElementBuffer(elements);
 	}
 }

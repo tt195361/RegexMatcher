@@ -8,6 +8,10 @@ class OneCharElement extends RegexElement {
 		_expectedChar = ch;
 	}
 	
+	char getExpectedChar() {
+		return _expectedChar;
+	}
+	
 	@Override
 	boolean oneMatch(ElementBuffer elemBuffer, StringBuffer strBuffer) {
 		char actualChar = strBuffer.getCurrent();
