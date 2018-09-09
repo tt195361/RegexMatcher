@@ -11,4 +11,9 @@ class BufferState {
 	int getIndex() {
 		return _index;
 	}
+	
+	@Override
+	public String toString() {
+		return String.format("_index=%d", _index);
+	}
 }

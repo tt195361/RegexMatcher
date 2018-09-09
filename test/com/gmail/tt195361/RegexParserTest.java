@@ -86,6 +86,25 @@ public class RegexParserTest {
 						new OneCharElement('\\')),
 				"エスケープが最後の文字 -> エスケープ");
 	}
+	
+	@Test
+	public void testCharClass() {
+		checkParse(
+				"[abc]",
+				ElementBuffer.makeForUnitTest(
+						new CharClassElement(false, TestUtils.makeHashSet('a', 'b', 'c'))),
+				"文字を指定");
+		checkParse(
+				"[a-c]",
+				ElementBuffer.makeForUnitTest(
+						new CharClassElement(false, TestUtils.makeHashSet('a', 'b', 'c'))),
+				"文字範囲を指定");
+		checkParse(
+				"[",
+				ElementBuffer.makeForUnitTest(
+						new OneCharElement('[')),
+				"'[' が最後の文字 -> 文字 '[' ");
+	}
 
 	private void checkParse(String pattern, ElementBuffer expected, String message) {
 		ElementBuffer actual = RegexParser.parse(pattern);

@@ -8,6 +8,7 @@ class RegexParser {
 	private static final char Start = '^';
 	private static final char End = '$';
 	private static final char Closure = '*';
+	private static final char CharClassStart = '[';
 	private static final char Escape = '\\';
 
 	static ElementBuffer parse(String pattern) {
@@ -51,15 +52,19 @@ class RegexParser {
 			element = new ClosureElement(lastElem);
 			removeLastElem = true;
 		}
+		else if (ch == CharClassStart && !strBuffer.isLast()) {
+			CharClassParser charClassParser = new CharClassParser();
+			element =  charClassParser.parse(strBuffer);
+		}
 		else {
-			char escCh = getEscapeChar(ch, strBuffer);
+			char escCh = parseEscapeChar(ch, strBuffer);
 			element = new OneCharElement(escCh);
 		}
 		
 		return new ElementParseResult(element, removeLastElem);
 	}
-	
-	private static char getEscapeChar(char ch, StringBuffer strBuffer) {
+
+	static char parseEscapeChar(char ch, StringBuffer strBuffer) {
 		if	(ch != Escape) {
 			// Escape Ç≈Ç»ÇØÇÍÇŒÅAÇªÇÃï∂éöÅB
 			return ch;

@@ -25,6 +25,12 @@ public class RegexMatcherTest {
 		checkSuccess(
 				"", "abc", 0, "",
 				"空文字列のパターンは、位置 0 で空文字列と一致する。");
+		checkSuccess(
+				"[A-Z][a-z0-9][a-z0-9]*", "A-X1d23#", 2, "X1d23",
+				"文字クラスと閉包の組み合わせ、英大文字 1 文字と 1 文字以上の英小文字か数字");
+		checkSuccess(
+				"[^a-z][^0-9]", "ab12c", 3, "2c",
+				"文字クラスの指定以外");
 	}
 	
 	private void checkSuccess(
