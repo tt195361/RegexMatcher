@@ -3,8 +3,8 @@ package com.gmail.tt195361;
 class AnyCharElement extends RegexElement {
 
 	@Override
-	boolean oneMatch(ElementBuffer elemBuffer, StringBuffer strBuffer) {
-		strBuffer.moveNext();
+	boolean oneMatch(ElementEnumerator elemEnum, StringEnumerator strEnum) {
+		strEnum.moveNext();
 		return true;
 	}
 	

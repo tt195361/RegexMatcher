@@ -1,10 +1,10 @@
 package com.gmail.tt195361;
 
-class BufferState {
+class EnumeratorState {
 
 	private final int _index;
 	
-	BufferState(int index) {
+	EnumeratorState(int index) {
 		_index = index;
 	}
 	

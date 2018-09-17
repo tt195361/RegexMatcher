@@ -2,21 +2,21 @@ package com.gmail.tt195361;
 
 public class RegexMatcher {
 	
-	private final ElementBuffer _elemBuffer;
-	private final BufferState _initialElemBufferState;
+	private final ElementEnumerator _elemEnum;
+	private final EnumeratorState _initialElemEnumState;
 	
 	public RegexMatcher(String pattern) {
-		_elemBuffer = RegexParser.parse(pattern);
-		_initialElemBufferState = _elemBuffer.saveState();
+		_elemEnum = RegexParser.parse(pattern);
+		_initialElemEnumState = _elemEnum.saveState();
 	}
 	
 	public MatchResult match(String str) {
 		for (int startIndex = 0; startIndex < str.length(); ++startIndex) {
-			_elemBuffer.restoreState(_initialElemBufferState);
-			StringBuffer strBuffer = new StringBuffer(str, startIndex);
+			_elemEnum.restoreState(_initialElemEnumState);
+			StringEnumerator strEnum = new StringEnumerator(str, startIndex);
 			
-			if (doMatch(_elemBuffer, strBuffer)) {
-				String matchString = strBuffer.getMatchString();
+			if (doMatch(_elemEnum, strEnum)) {
+				String matchString = strEnum.getMatchString();
 				return MatchResult.makeSuccessResult(startIndex, matchString);
 			}
 		}
@@ -24,18 +24,18 @@ public class RegexMatcher {
 		return MatchResult.makeFailResult();
 	}
 	
-	static boolean doMatch(ElementBuffer elemBuffer, StringBuffer strBuffer) {
-		while (elemBuffer.hasCurrent()) {
-			if (!strBuffer.hasCurrent()) {
+	static boolean doMatch(ElementEnumerator elemEnum, StringEnumerator strEnum) {
+		while (elemEnum.hasCurrent()) {
+			if (!strEnum.hasCurrent()) {
 				return false;
 			}
 			
-			RegexElement element = elemBuffer.getCurrent();
-			if (!element.oneMatch(elemBuffer, strBuffer)) {
+			RegexElement element = elemEnum.getCurrent();
+			if (!element.oneMatch(elemEnum, strEnum)) {
 				return false;
 			}
 			
-			elemBuffer.moveNext();
+			elemEnum.moveNext();
 		}
 
 		return true;

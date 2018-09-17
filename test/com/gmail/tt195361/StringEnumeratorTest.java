@@ -4,7 +4,7 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-public class StringBufferTest {
+public class StringEnumeratorTest {
 
 	@Test
 	public void testIsStart() {
@@ -14,8 +14,8 @@ public class StringBufferTest {
 
 	private void checkIsStart(
 			String str, int startIndex, boolean expected, String message) {
-		StringBuffer strBuffer = new StringBuffer(str, startIndex);
-		boolean actual = strBuffer.isStart();
+		StringEnumerator strEnum = new StringEnumerator(str, startIndex);
+		boolean actual = strEnum.isStart();
 		assertEquals(message, expected, actual);
 	}
 	
@@ -27,8 +27,8 @@ public class StringBufferTest {
 
 	private void checkIsLast(
 			String str, int startIndex, boolean expected, String message) {
-		StringBuffer strBuffer = new StringBuffer(str, startIndex);
-		boolean actual = strBuffer.isLast();
+		StringEnumerator strEnum = new StringEnumerator(str, startIndex);
+		boolean actual = strEnum.isLast();
 		assertEquals(message, expected, actual);
 	}
 	
@@ -40,8 +40,8 @@ public class StringBufferTest {
 
 	private void checkIsEnd(
 			String str, int startIndex, boolean expected, String message) {
-		StringBuffer strBuffer = new StringBuffer(str, startIndex);
-		boolean actual = strBuffer.isEnd();
+		StringEnumerator strEnum = new StringEnumerator(str, startIndex);
+		boolean actual = strEnum.isEnd();
 		assertEquals(message, expected, actual);
 	}
 }

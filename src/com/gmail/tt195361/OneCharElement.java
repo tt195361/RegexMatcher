@@ -2,30 +2,30 @@ package com.gmail.tt195361;
 
 class OneCharElement extends RegexElement {
 	
-	private final char _expectedChar;
+	private final char _specifiedCh;
 	
 	OneCharElement(char ch) {
-		_expectedChar = ch;
+		_specifiedCh = ch;
 	}
 	
 	char getExpectedChar() {
-		return _expectedChar;
+		return _specifiedCh;
 	}
 	
 	@Override
-	boolean oneMatch(ElementBuffer elemBuffer, StringBuffer strBuffer) {
-		char actualChar = strBuffer.getCurrent();
-		if (actualChar != _expectedChar) {
+	boolean oneMatch(ElementEnumerator elemEnum, StringEnumerator strEnum) {
+		char actualCh = strEnum.getCurrent();
+		if (actualCh != _specifiedCh) {
 			return false;
 		} 
 		else {
-			strBuffer.moveNext();
+			strEnum.moveNext();
 			return true;
 		}
 	}
 	
 	@Override
 	public String toString() {
-		return "OneChar: " + Character.toString(_expectedChar);
+		return "OneChar: " + Character.toString(_specifiedCh);
 	}
 }

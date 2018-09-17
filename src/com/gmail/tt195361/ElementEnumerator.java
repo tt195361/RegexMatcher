@@ -2,24 +2,24 @@ package com.gmail.tt195361;
 
 import java.util.List;
 
-class ElementBuffer {
+class ElementEnumerator {
 
 	private final RegexElement[] _elements;
 	private final int _length;
 	private int _index;
 	
-	ElementBuffer(List<RegexElement> elemList) {
+	ElementEnumerator(List<RegexElement> elemList) {
 		this(elemList.toArray(new RegexElement[0]));
 	}
 	
-	private ElementBuffer(RegexElement[] elements) {
+	private ElementEnumerator(RegexElement[] elements) {
 		_elements = elements;
 		_length = elements.length;
 		_index = 0;
 	}
 	
 	boolean hasCurrent() {
-		return _index < _length;
+		return 0 <= _index && _index < _length;
 	}
 	
 	void moveNext() {
@@ -32,11 +32,11 @@ class ElementBuffer {
 		return _elements[_index];
 	}
 	
-	BufferState saveState() {
-		return new BufferState(_index);
+	EnumeratorState saveState() {
+		return new EnumeratorState(_index);
 	}
 	
-	void restoreState(BufferState state) {
+	void restoreState(EnumeratorState state) {
 		_index = state.getIndex();
 	}
 	
@@ -46,7 +46,7 @@ class ElementBuffer {
 		return String.format("_index=%d, current=%s", _index, current.toString());
 	}
 	
-	static ElementBuffer makeForUnitTest(RegexElement...elements) {
-		return new ElementBuffer(elements);
+	static ElementEnumerator makeForUnitTest(RegexElement...elements) {
+		return new ElementEnumerator(elements);
 	}
 }

@@ -8,7 +8,7 @@ public class RegexParserTest {
 	public void testAny() {
 		checkParse(
 				".",
-				ElementBuffer.makeForUnitTest(
+				ElementEnumerator.makeForUnitTest(
 						new AnyCharElement()),
 				"'.' -> 任意の 1 文字 ");
 	}
@@ -17,13 +17,13 @@ public class RegexParserTest {
 	public void testStartOfString() {
 		checkParse(
 				"^a",
-				ElementBuffer.makeForUnitTest(
+				ElementEnumerator.makeForUnitTest(
 						new StartOfStringElement(),
 						new OneCharElement('a')),
 				"先頭の '^' -> 行頭 ");
 		checkParse(
 				"a^",
-				ElementBuffer.makeForUnitTest(
+				ElementEnumerator.makeForUnitTest(
 						new OneCharElement('a'),
 						new OneCharElement('^')),
 				"先頭以外の '^' -> 文字 '^'");
@@ -33,13 +33,13 @@ public class RegexParserTest {
 	public void testEndOfString() {
 		checkParse(
 				"a$",
-				ElementBuffer.makeForUnitTest(
+				ElementEnumerator.makeForUnitTest(
 						new OneCharElement('a'),
 						new EndOfStringElement()),
 				"最後の '$' -> 行末 ");
 		checkParse(
 				"$a",
-				ElementBuffer.makeForUnitTest(
+				ElementEnumerator.makeForUnitTest(
 						new OneCharElement('$'),
 						new OneCharElement('a')),
 				"最後以外の '$' -> 文字 '$'");
@@ -49,19 +49,19 @@ public class RegexParserTest {
 	public void testClosure() {
 		checkParse(
 				"a*",
-				ElementBuffer.makeForUnitTest(
+				ElementEnumerator.makeForUnitTest(
 						new ClosureElement(
 								new OneCharElement('a'))),
 				"2 番目以降の '*' -> 閉包 ");
 		checkParse(
 				"*a",
-				ElementBuffer.makeForUnitTest(
+				ElementEnumerator.makeForUnitTest(
 						new OneCharElement('*'),
 						new OneCharElement('a')),
 				"最初の '*' -> 文字 '*'");
 		checkParse(
 				"a**",
-				ElementBuffer.makeForUnitTest(
+				ElementEnumerator.makeForUnitTest(
 						new ClosureElement(
 								new ClosureElement(
 										new OneCharElement('a')))),
@@ -72,17 +72,17 @@ public class RegexParserTest {
 	public void testOneChar() {
 		checkParse(
 				"a",
-				ElementBuffer.makeForUnitTest(
+				ElementEnumerator.makeForUnitTest(
 						new OneCharElement('a')),
 				"エスケープされていない -> その文字");
 		checkParse(
 				"\\.",
-				ElementBuffer.makeForUnitTest(
+				ElementEnumerator.makeForUnitTest(
 						new OneCharElement('.')),
 				"エスケープされている -> その次の文字");
 		checkParse(
 				"\\",
-				ElementBuffer.makeForUnitTest(
+				ElementEnumerator.makeForUnitTest(
 						new OneCharElement('\\')),
 				"エスケープが最後の文字 -> エスケープ");
 	}
@@ -91,23 +91,23 @@ public class RegexParserTest {
 	public void testCharClass() {
 		checkParse(
 				"[abc]",
-				ElementBuffer.makeForUnitTest(
+				ElementEnumerator.makeForUnitTest(
 						new CharClassElement(false, TestUtils.makeHashSet('a', 'b', 'c'))),
 				"文字を指定");
 		checkParse(
 				"[a-c]",
-				ElementBuffer.makeForUnitTest(
+				ElementEnumerator.makeForUnitTest(
 						new CharClassElement(false, TestUtils.makeHashSet('a', 'b', 'c'))),
 				"文字範囲を指定");
 		checkParse(
 				"[",
-				ElementBuffer.makeForUnitTest(
+				ElementEnumerator.makeForUnitTest(
 						new OneCharElement('[')),
 				"'[' が最後の文字 -> 文字 '[' ");
 	}
 
-	private void checkParse(String pattern, ElementBuffer expected, String message) {
-		ElementBuffer actual = RegexParser.parse(pattern);
-		ElementBufferTest.check(expected, actual, message);
+	private void checkParse(String pattern, ElementEnumerator expected, String message) {
+		ElementEnumerator actual = RegexParser.parse(pattern);
+		ElementEnumeratorTest.check(expected, actual, message);
 	}
 }

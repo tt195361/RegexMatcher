@@ -80,6 +80,10 @@ public class CharClassParserTest {
 				"[^",
 				new CharClassElement(true, TestUtils.makeHashSet()),
 				"'[' ‚Æ '^' ‚¾‚¯ ‚Å ']' ‚È‚µ -> HashSet ‚Í‹ó");
+		checkParse(
+				"[a^]",
+				new CharClassElement(false, TestUtils.makeHashSet('a', '^')),
+				"'[' ‚Ì’¼Œã‚Å‚È‚¢ '^' -> '^' ‚Í•¶š‚Æ‚µ‚Äˆµ‚í‚ê HashSet ‚É“ü‚é");
 
 		// “¯‚¶•¶š‚ª•¡”‰ñŠÜ‚Ü‚ê‚Ä‚¢‚éê‡B
 		checkParse(
@@ -89,9 +93,9 @@ public class CharClassParserTest {
 	}
 	
 	private void checkParse(String pattern, CharClassElement expected, String message) {
-		StringBuffer strBuffer = new StringBuffer(pattern, 0);
+		StringEnumerator strEnum = new StringEnumerator(pattern, 0);
 		CharClassParser target = new CharClassParser();
-		CharClassElement actual = target.parse(strBuffer);
+		CharClassElement actual = target.parse(strEnum);
 		RegexElementTest.checkCharClassElement(expected, actual, message);
 	}
 

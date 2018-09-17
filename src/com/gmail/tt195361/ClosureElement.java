@@ -15,46 +15,40 @@ class ClosureElement extends RegexElement {
 	}
 
 	@Override
-	boolean oneMatch(ElementBuffer elemBuffer, StringBuffer strBuffer) {
-		Stack<BufferState> strBufferCandidateStates =
-				makeStrBufferCandidateStates(elemBuffer, strBuffer);
+	boolean oneMatch(ElementEnumerator elemEnum, StringEnumerator strEnum) {
+		Stack<EnumeratorState> strEnumCandidateStateStack =
+				makeStrEnumCandidateStates(elemEnum, strEnum);
 		
-		elemBuffer.moveNext();
-		return matchTheRestOfElements(elemBuffer, strBuffer, strBufferCandidateStates);
+		elemEnum.moveNext();
+		return matchTheRestOfElements(elemEnum, strEnum, strEnumCandidateStateStack);
 	}
 	
-	private Stack<BufferState> makeStrBufferCandidateStates(
-			ElementBuffer elemBuffer, StringBuffer strBuffer) {
-		Stack<BufferState> candidateStates = new Stack<BufferState>();
+	private Stack<EnumeratorState> makeStrEnumCandidateStates(
+			ElementEnumerator elemEnum, StringEnumerator strEnum) {
+		Stack<EnumeratorState> candidateStateStack = new Stack<EnumeratorState>();
 		
-		pushCandidateState(candidateStates, strBuffer);
-		while (strBuffer.hasCurrent()) {
-			if (!_element.oneMatch(elemBuffer, strBuffer)) {
+		candidateStateStack.push(strEnum.saveState());
+		while (strEnum.hasCurrent()) {
+			if (!_element.oneMatch(elemEnum, strEnum)) {
 				break;
 			}
 			
-			pushCandidateState(candidateStates, strBuffer);
+			candidateStateStack.push(strEnum.saveState());
 		}
 		
-		return candidateStates;
+		return candidateStateStack;
 	}
-	
-	private void pushCandidateState(
-			Stack<BufferState> candidates, StringBuffer strBuffer) {
-		BufferState state = strBuffer.saveState();
-		candidates.push(state);
-	}
-	
-	private boolean matchTheRestOfElements(
-			ElementBuffer elemBuffer, StringBuffer strBuffer,
-			Stack<BufferState> strBufferCandidateStates) {
-		BufferState savedElemBufferState = elemBuffer.saveState();
 		
-		while (!strBufferCandidateStates.empty()) {
-			elemBuffer.restoreState(savedElemBufferState);
-			strBuffer.restoreState(strBufferCandidateStates.pop());
+	private boolean matchTheRestOfElements(
+			ElementEnumerator elemEnum, StringEnumerator strEnum,
+			Stack<EnumeratorState> strEnumCandidateStateStack) {
+		EnumeratorState savedElemEnumState = elemEnum.saveState();
+		
+		while (!strEnumCandidateStateStack.empty()) {
+			elemEnum.restoreState(savedElemEnumState);
+			strEnum.restoreState(strEnumCandidateStateStack.pop());
 			
-			if (RegexMatcher.doMatch(elemBuffer, strBuffer)) {
+			if (RegexMatcher.doMatch(elemEnum, strEnum)) {
 				return true;
 			}
 		}

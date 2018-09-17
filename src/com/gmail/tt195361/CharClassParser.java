@@ -24,61 +24,61 @@ class CharClassParser {
 		_charSet = new HashSet<Character>();
 	}
 	
-	CharClassElement parse(StringBuffer strBuffer) {
+	CharClassElement parse(StringEnumerator strEnum) {
 		// '[' をまたぎ越し、次が '^' かどうか調べる。
-		strBuffer.moveNext();
-		boolean notContained = parseCharClassNot(strBuffer);
+		strEnum.moveNext();
+		boolean notContains = parseCharClassNot(strEnum);
 		
 		// 現在の文字があり、それが ']' でなければ、その文字を状態に応じて読み込み、次の文字に移動する。
-		while (strBuffer.hasCurrent()) {
-			char ch = strBuffer.getCurrent();
+		while (strEnum.hasCurrent()) {
+			char ch = strEnum.getCurrent();
 			if (ch == CharClassEnd) {
 				break;
 			}
 			
-			readDependingOnState(ch, strBuffer);
-			strBuffer.moveNext();
+			readDependingOnState(ch, strEnum);
+			strEnum.moveNext();
 		}
 		
 		// 読み込んだが処理されずに残っている文字を _charSet に追加し、CharClassElement を生成して返す。
 		addRemainingCharsToCharSet();
-		return new CharClassElement(notContained, _charSet);
+		return new CharClassElement(notContains, _charSet);
 	}
 	
-	private boolean parseCharClassNot(StringBuffer strBuffer) {
-		if (!strBuffer.hasCurrent()) {
+	private boolean parseCharClassNot(StringEnumerator strEnum) {
+		if (!strEnum.hasCurrent()) {
 			return false;
 		}
 		
-		char ch = strBuffer.getCurrent();
+		char ch = strEnum.getCurrent();
 		if (ch != CharClassNot) {
 			return false;
 		}
 		else {
-			strBuffer.moveNext();
+			strEnum.moveNext();
 			return true;
 		}
 	}
 	
-	private void readDependingOnState(char ch, StringBuffer strBuffer) {
+	private void readDependingOnState(char ch, StringEnumerator strEnum) {
 		if (_state == State.Initial) {
-			readStartChar(ch, strBuffer);
+			readStartChar(ch, strEnum);
 		}
 		else if (_state == State.StartCharRead) {
-			readRange(ch, strBuffer);
+			readRange(ch, strEnum);
 		}
 		else {
-			readEndChar(ch, strBuffer);
+			readEndChar(ch, strEnum);
 		}
 	}
 	
-	private void readStartChar(char ch, StringBuffer strBuffer) {
+	private void readStartChar(char ch, StringEnumerator strEnum) {
 		// 範囲開始の文字を読み込み、StartCharRead 状態に遷移する。
-		_startCh = RegexParser.parseEscapeChar(ch, strBuffer);
+		_startCh = RegexParser.parseEscapeChar(ch, strEnum);
 		_state = State.StartCharRead;
 	}
 	
-	private void readRange(char ch, StringBuffer strBuffer) {
+	private void readRange(char ch, StringEnumerator strEnum) {
 		if (ch == CharClassRange) {
 			// 現在の文字が '-' ならば、RangeRead　状態に遷移する。
 			_state = State.RangeRead;
@@ -87,13 +87,13 @@ class CharClassParser {
 			// それ以外ならば、範囲開始の文字を 1 文字の指定として _charSet に追加し、
 			// あらためて範囲開始の文字を読み込む。
 			_charSet.add(_startCh);
-			readStartChar(ch, strBuffer);
+			readStartChar(ch, strEnum);
 		}
 	}
 	
-	private void readEndChar(char ch, StringBuffer strBuffer) {
+	private void readEndChar(char ch, StringEnumerator strEnum) {
 		// 範囲終了の文字を読み込み、指定範囲の文字を _charSet に追加し、Initial 状態に戻る。
-		char endCh = RegexParser.parseEscapeChar(ch, strBuffer);
+		char endCh = RegexParser.parseEscapeChar(ch, strEnum);
 		
 		char minCh = MathUtils.minCh(_startCh, endCh);
 		char maxCh = MathUtils.maxCh(_startCh, endCh);

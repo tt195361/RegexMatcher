@@ -4,16 +4,16 @@ import java.util.HashSet;
 
 class CharClassElement extends RegexElement {
 
-	private final boolean _notContained;
+	private final boolean _notContains;
 	private final HashSet<Character> _charSet;
 	
-	CharClassElement(boolean notContained, HashSet<Character> charSet) {
-		_notContained = notContained;
+	CharClassElement(boolean notContains, HashSet<Character> charSet) {
+		_notContains = notContains;
 		_charSet = charSet;
 	}
 	
 	boolean getNotContained() {
-		return _notContained;
+		return _notContains;
 	}
 	
 	HashSet<Character> getCharSet() {
@@ -21,10 +21,10 @@ class CharClassElement extends RegexElement {
 	}
 	
 	@Override
-	boolean oneMatch(ElementBuffer elemBuffer, StringBuffer strBuffer) {
-		char ch = strBuffer.getCurrent();
-		if (_charSet.contains(ch) ^ _notContained) {
-			strBuffer.moveNext();
+	boolean oneMatch(ElementEnumerator elemEnum, StringEnumerator strEnum) {
+		char ch = strEnum.getCurrent();
+		if (_charSet.contains(ch) ^ _notContains) {
+			strEnum.moveNext();
 			return true;
 		}
 		else {
@@ -35,7 +35,7 @@ class CharClassElement extends RegexElement {
 	@Override
 	public String toString() {
 		return String.format(
-				"CharClassElement: _notContained=%s, _charSet=%s",
-				Boolean.toString(_notContained), _charSet.toString());
+				"CharClassElement: _notContains=%s, _charSet=%s",
+				Boolean.toString(_notContains), _charSet.toString());
 	}
 }

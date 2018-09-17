@@ -1,13 +1,13 @@
 package com.gmail.tt195361;
 
-class StringBuffer {
-
+class StringEnumerator {
+	
 	private final String _str;
 	private final int _startIndex;
 	private final int _length;
 	private int _currentIndex;
 	
-	StringBuffer(String str, int startIndex) {
+	StringEnumerator(String str, int startIndex) {
 		_str = str;
 		_startIndex = startIndex;
 		_length = str.length();
@@ -44,11 +44,11 @@ class StringBuffer {
 		return _str.charAt(_currentIndex);
 	}
 	
-	BufferState saveState() {
-		return new BufferState(_currentIndex);
+	EnumeratorState saveState() {
+		return new EnumeratorState(_currentIndex);
 	}
 
-	void restoreState(BufferState state) {
+	void restoreState(EnumeratorState state) {
 		_currentIndex = state.getIndex();
 	}
 	

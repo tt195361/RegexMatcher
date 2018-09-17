@@ -2,8 +2,8 @@ package com.gmail.tt195361;
 
 import static org.junit.Assert.*;
 
-class ElementBufferTest {
-	static void check(ElementBuffer expected, ElementBuffer actual, String message) {
+class ElementEnumeratorTest {
+	static void check(ElementEnumerator expected, ElementEnumerator actual, String message) {
 		while (expected.hasCurrent() && actual.hasCurrent()) {
 			RegexElement expectedElement = expected.getCurrent();
 			RegexElement actualElement = actual.getCurrent();
