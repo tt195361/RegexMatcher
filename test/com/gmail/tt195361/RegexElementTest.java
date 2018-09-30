@@ -36,15 +36,15 @@ class RegexElementTest {
 	private static void checkOneCharElement(
 			OneCharElement expected, OneCharElement actual, String message) {
 		assertEquals(
-				"expectedChar: " + message,
-				expected.getExpectedChar(), actual.getExpectedChar());
+				"specifiedChar: " + message,
+				expected.getSpecifiedChar(), actual.getSpecifiedChar());
 	}
 	
 	static void checkCharClassElement(
 			CharClassElement expected, CharClassElement actual, String message) {
 		assertEquals(
-				"notContained: " + message,
-				expected.getNotContained(), actual.getNotContained());
+				"notContains: " + message,
+				expected.getNotContains(), actual.getNotContains());
 		TestUtils.checkHashSet(
 				"charSet: + message",
 				expected.getCharSet(), actual.getCharSet());

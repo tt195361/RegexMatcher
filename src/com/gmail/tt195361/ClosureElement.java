@@ -48,7 +48,7 @@ class ClosureElement extends RegexElement {
 			elemEnum.restoreState(savedElemEnumState);
 			strEnum.restoreState(strEnumCandidateStateStack.pop());
 			
-			if (RegexMatcher.doMatch(elemEnum, strEnum)) {
+			if (RegexMatcher.matchFromCurrent(elemEnum, strEnum)) {
 				return true;
 			}
 		}

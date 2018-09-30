@@ -12,7 +12,7 @@ class CharClassElement extends RegexElement {
 		_charSet = charSet;
 	}
 	
-	boolean getNotContained() {
+	boolean getNotContains() {
 		return _notContains;
 	}
 	

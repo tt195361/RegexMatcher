@@ -8,7 +8,7 @@ class OneCharElement extends RegexElement {
 		_specifiedCh = ch;
 	}
 	
-	char getExpectedChar() {
+	char getSpecifiedChar() {
 		return _specifiedCh;
 	}
 	
