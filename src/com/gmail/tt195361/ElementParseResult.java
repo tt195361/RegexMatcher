@@ -17,4 +17,14 @@ class ElementParseResult {
 	boolean removeLastElem() {
 		return _removeLastElem;
 	}
+	
+	/**
+	 * {@link ElementParseResult} クラスのオブジェクトの文字列表現を返します。
+	 */
+	@Override
+	public String toString() {
+		return String.format(
+				"_element=%s, _removeLastElem=%s",
+				_element.toString(), Boolean.toString(_removeLastElem));
+	}
 }

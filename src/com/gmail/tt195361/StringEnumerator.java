@@ -23,25 +23,38 @@ class StringEnumerator {
 	}
 	
 	boolean isEnd() {
-		return _length <= _currentIndex;
-	}
-	
-	String getMatchString() {
-		return _str.substring(_startIndex, _currentIndex);
+		return _length == _currentIndex;
 	}
 	
 	boolean hasCurrent() {
 		return 0 <= _currentIndex && _currentIndex < _length;
 	}
+	
+	boolean hasCurrentOrEnd() {
+		return hasCurrent() || isEnd();
+	}
 
 	void moveNext() {
-		if (hasCurrent()) {
+		if (hasCurrentOrEnd()) {
 			++_currentIndex;
 		}
 	}
+	
+	int getCurrentIndex() {
+		return _currentIndex;
+	}
 
 	char getCurrent() {
-		return _str.charAt(_currentIndex);
+		if (!hasCurrent()) {
+			return '\0';
+		}
+		else {
+			return _str.charAt(_currentIndex);
+		}
+	}
+	
+	String getMatchString() {
+		return _str.substring(_startIndex, getEndIndex());
 	}
 	
 	EnumeratorState saveState() {
@@ -54,11 +67,14 @@ class StringEnumerator {
 	
 	@Override
 	public String toString() {
-		if (!hasCurrent()) {
-			return "";
-		}
-		else {
-			return _str.substring(_currentIndex);
-		}
+		return String.format("_currentIndex=%d, rest=%s", _currentIndex, getRest());
+	}
+	
+	private String getRest() {
+		return _str.substring(getEndIndex());
+	}
+	
+	private int getEndIndex() {
+		return Math.min(_currentIndex, _length);
 	}
 }

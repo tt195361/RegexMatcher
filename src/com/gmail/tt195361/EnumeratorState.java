@@ -13,6 +13,20 @@ class EnumeratorState {
 	}
 	
 	@Override
+	public boolean equals(Object obj) {
+		if (obj == null) {
+			return false;
+		}
+		
+		if (!(obj instanceof EnumeratorState)) {
+			return false;
+		}
+		
+		EnumeratorState that = (EnumeratorState)obj;
+		return this._index == that._index;
+	}
+	
+	@Override
 	public String toString() {
 		return String.format("_index=%d", _index);
 	}

@@ -3,6 +3,7 @@ package com.gmail.tt195361;
 import static org.junit.Assert.*;
 
 class RegexElementTest {
+	
 	static void check(
 			RegexElement expected, RegexElement actual, String message) {
 		if (expected instanceof AnyCharElement) {
@@ -30,7 +31,7 @@ class RegexElementTest {
 	
 	private static void checkClosureElement(
 			ClosureElement expected, ClosureElement actual, String message) {
-		check(expected.getRegexElement(), actual.getRegexElement(), message);
+		check(expected.getRepeatElement(), actual.getRepeatElement(), message);
 	}
 	
 	private static void checkOneCharElement(

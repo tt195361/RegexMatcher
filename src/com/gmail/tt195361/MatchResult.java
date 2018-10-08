@@ -10,7 +10,7 @@ public class MatchResult {
 	 * 
 	 * @param startIndex 一致が開始した文字列のインデックスです。
 	 * @param matchString　正規表現が一致した部分の文字列です。
-	 * @return パラメータで指定した内容を含む一致に成功した結果を格納する {@link MatchResult} クラスの
+	 * @return パラメータで指定した内容を持つ一致に成功した結果を格納する {@link MatchResult} クラスの
 	 * 		オブジェクトを作成して返します。
 	 */
 	static MatchResult makeSuccessResult(int startIndex, String matchString) {

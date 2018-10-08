@@ -57,12 +57,11 @@ public class RegexMatcher {
 	 */
 	public MatchResult match(String str) {
 		// 指定の文字列のそれぞれの位置で、正規表現が一致するかどうかを調べます。
-		for (int startIndex = 0; startIndex < str.length(); ++startIndex) {
-			// 正規表現要素の列挙子を初期状態に戻し、現在の位置から列挙を開始する文字列の列挙子を作成します。
+		// 文字列の最後に一致することがあるので、length() + 1 まで調べます。
+		for (int startIndex = 0; startIndex < str.length() + 1; ++startIndex) {
+			// 正規表現要素の列挙子を最初に戻し、文字列の startIndex の位置から一致するか調べます。
 			_elemEnum.restoreState(_initialElemEnumState);
 			StringEnumerator strEnum = new StringEnumerator(str, startIndex);
-			
-			// 正規表現が文字列の現在位置から一致するかどうかを調べます。一致すれば成功の結果を作成し返します。
 			if (matchFromCurrent(_elemEnum, strEnum)) {
 				String matchString = strEnum.getMatchString();
 				return MatchResult.makeSuccessResult(startIndex, matchString);
@@ -85,8 +84,8 @@ public class RegexMatcher {
 	static boolean matchFromCurrent(ElementEnumerator elemEnum, StringEnumerator strEnum) {
 		// 正規表現要素が存在する間、繰り返します。
 		while (elemEnum.hasCurrent()) {
-			// 正規表現要素がまだ存在するにもかかわらず、文字列が終了していれば、一致は失敗です。
-			if (!strEnum.hasCurrent()) {
+			// 正規表現要素がまだ存在するにもかかわらず、文字列の終わりを超えていれば、一致は失敗です。
+			if (!strEnum.hasCurrentOrEnd()) {
 				return false;
 			}
 			

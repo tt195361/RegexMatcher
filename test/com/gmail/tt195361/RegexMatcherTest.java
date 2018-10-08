@@ -31,6 +31,12 @@ public class RegexMatcherTest {
 		checkSuccess(
 				"[^a-z][^0-9]", "ab12c", 3, "2c",
 				"文字クラスの指定以外");
+		checkSuccess(
+				"^$", "", 0, "",
+				"^$ は空文字列に一致する");
+		checkSuccess(
+				"$", "abc", 3, "",
+				"$ は文字列の最後に一致する");
 	}
 	
 	private void checkSuccess(
