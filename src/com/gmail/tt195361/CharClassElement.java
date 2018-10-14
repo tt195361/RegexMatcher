@@ -23,9 +23,9 @@ class CharClassElement extends RegexElement {
 	}
 	
 	/**
-	 * 指定の文字が含まれていないことを示す値を取得します。
+	 * 指定の文字が含まれていないことを指定する値を取得します。
 	 * 
-	 * @return 指定の文字が含まれていないことを示す値を返します。
+	 * @return 指定の文字が含まれていないことを指定する値を返します。
 	 */
 	boolean getNotContains() {
 		return _notContains;
@@ -42,7 +42,14 @@ class CharClassElement extends RegexElement {
 	
 	/**
 	 * この正規表現要素が文字列の現在位置から一致するかどうかを調べます。
-	 * 文字クラスは、現在位置の文字が指定の文字に含まれているかどうかで一致を判断します。
+	 * 文字クラスは、現在位置に文字があり、かつ、現在位置の文字が {@link getNotContains} と
+	 * {@link getCharSet} の返す値と、以下のいずれかの条件を満たす場合に一致します。
+	 * <ul>
+	 *   <li>{@link getNotContains} が {@code false} を返す場合、
+	 *   	現在位置の文字が {@link getCharSet} の返す {@link HashSet} に含まれている。</li>
+	 *   <li>{@link getNotContains} が {@code true} を返す場合、
+	 *   	現在位置の文字が {@link getCharSet} の返す {@link HashSet} に含まれていない。</li>
+	 * </ul>
 	 * 
 	 * @param elemEnum 正規表現要素の列挙子です。呼び出し後の現在位置は移動しません。
 	 * @param strEnum 文字列の列挙子です。一致に成功した場合、呼び出し後の現在位置は次の文字に移動します。
@@ -50,16 +57,23 @@ class CharClassElement extends RegexElement {
 	 */
 	@Override
 	boolean oneMatch(ElementEnumerator elemEnum, StringEnumerator strEnum) {
-		char ch = strEnum.getCurrent();
-		
-		// ^ は排他的論理和で、"true ^ false" あるいは "false ^ true" のとき、結果は true になります。
-		if (_charSet.contains(ch) ^ _notContains) {
-			strEnum.moveNext();
-			return true;
-		}
-		else {
+		if (!strEnum.hasCurrent()) {
 			return false;
 		}
+		
+		char ch = strEnum.getCurrent();
+		if (!matchConditionSatisfied(ch)) {
+			return false;
+		}
+
+		strEnum.moveNext();
+		return true;
+	}
+	
+	// 指定の文字が一致の条件を満たしているかどうかを調べます。
+	private boolean matchConditionSatisfied(char ch) {
+		// ^ は排他的論理和で、"false ^ true" あるいは "true ^ false" のとき、結果は true になります。
+		return _notContains ^ _charSet.contains(ch);
 	}
 	
 	/**

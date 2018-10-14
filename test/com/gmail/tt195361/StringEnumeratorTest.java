@@ -79,7 +79,7 @@ public class StringEnumeratorTest {
 	public void hasCurrentOrEnd() {
 		checkHasCurrentOrEnd(
 				"abc", new Boolean[] { true, true, true, true, false },
-				"現在の位置に文字があるか文字列の終わりなら true、文字列の終わりを超えると false");
+				"現在の位置に文字があるか文字列の終わりなら true、文字列の終わりを越えると false");
 		checkHasCurrentOrEnd(
 				"", new Boolean[] { true, false },
 				"空文字列の場合は最初から文字列の終わり");
@@ -96,10 +96,10 @@ public class StringEnumeratorTest {
 	public void getCurrentIndex() {
 		checkGetCurrentIndex(
 				"abc", new Integer[] { 0, 1, 2, 3, 4, 4, 4 },
-				"moveNext() を呼ぶと現在位置が一つずつ移動し、最後を超えるとそれ以上移動しない");
+				"moveNext() を呼ぶと現在位置が一つずつ移動し、最後を越えるとそれ以上移動しない");
 		checkGetCurrentIndex(
 				"", new Integer[] { 0, 1, 1, 1 },
-				"空文字列は最初から文字列の終わりで、それを超えるとそれ以上移動しない");
+				"空文字列は最初から文字列の終わりで、それを越えるとそれ以上移動しない");
 	}
 	
 	private void checkGetCurrentIndex(
@@ -113,7 +113,7 @@ public class StringEnumeratorTest {
 	public void getCurrent() {
 		checkGetCurrent(
 				"abc", new Character[] { 'a', 'b', 'c', '\0', '\0' },
-				"現在位置の文字を取得する。文字列の終わりかそれを超えると '\0' を返す");
+				"現在位置の文字を取得する。文字列の終わりかそれを越えると '\0' を返す");
 		checkGetCurrent(
 				"", new Character[] { '\0', '\0' },
 				"空文字列は最初から文字列の終わりなので '\0' を返す");
@@ -127,19 +127,19 @@ public class StringEnumeratorTest {
 	}
 	
 	@Test
-	public void getMatchString() {
-		checkGetMatchString(
+	public void getSubstring() {
+		checkGetSubstring(
 				"abc", new String[] { "", "a", "ab", "abc", "abc" },
 				"開始位置から現在位置までの文字列を取得する。");
-		checkGetMatchString(
+		checkGetSubstring(
 				"", new String[] { "", "" },
 				"空文字列の場合は空文字列が返る");
 	}
 	
-	private void checkGetMatchString(
+	private void checkGetSubstring(
 			String str, String[] expectedArray, String message) {
 		checkFunction(
-				(strEnum) -> strEnum.getMatchString(),
+				(strEnum) -> strEnum.getSubstring(),
 				str, expectedArray, message);
 	}
 	

@@ -16,38 +16,32 @@ class RegexElementTest {
 			// チェックする内容なし
 		}
 		else if (expected instanceof ClosureElement) {
-			checkClosureElement((ClosureElement)expected, (ClosureElement)actual, message);
+			ClosureElementTest.check(
+					(ClosureElement)expected, (ClosureElement)actual, message);
 		}
 		else if (expected instanceof OneCharElement) {
-			checkOneCharElement((OneCharElement)expected, (OneCharElement)actual, message);
+			OneCharElementTest.check(
+					(OneCharElement)expected, (OneCharElement)actual, message);
 		}
 		else if (expected instanceof CharClassElement) {
-			checkCharClassElement((CharClassElement)expected, (CharClassElement) actual, message);
+			CharClassElementTest.check(
+					(CharClassElement)expected, (CharClassElement) actual, message);
 		}
 		else {
 			fail("未知の RegexElement の派生型です");
 		}
 	}
 	
-	private static void checkClosureElement(
-			ClosureElement expected, ClosureElement actual, String message) {
-		check(expected.getRepeatElement(), actual.getRepeatElement(), message);
-	}
-	
-	private static void checkOneCharElement(
-			OneCharElement expected, OneCharElement actual, String message) {
-		assertEquals(
-				"specifiedChar: " + message,
-				expected.getSpecifiedChar(), actual.getSpecifiedChar());
-	}
-	
-	static void checkCharClassElement(
-			CharClassElement expected, CharClassElement actual, String message) {
-		assertEquals(
-				"notContains: " + message,
-				expected.getNotContains(), actual.getNotContains());
-		TestUtils.checkHashSet(
-				"charSet: + message",
-				expected.getCharSet(), actual.getCharSet());
+	static void checkOneMatch(
+			RegexElement regexElem, String str,
+			boolean expectedResult, int expectedCurrentIndex, String message) {
+		ElementEnumerator elemEnum = ElementEnumerator.makeForUnitTest(regexElem);
+		StringEnumerator strEnum = new StringEnumerator(str, 0);
+		
+		boolean actualResult = regexElem.oneMatch(elemEnum, strEnum);
+		assertEquals("Result: " + message, expectedResult, actualResult);
+		
+		int actualCurrentIndex = strEnum.getCurrentIndex();
+		assertEquals("CurrentIndex: " + message, expectedCurrentIndex, actualCurrentIndex);
 	}
 }

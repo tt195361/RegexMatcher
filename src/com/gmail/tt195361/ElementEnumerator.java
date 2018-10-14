@@ -89,7 +89,7 @@ class ElementEnumerator {
 	 * @param state 列挙子を状態を保存した {@link EnumeratorState} クラスのオブジェクトです。
 	 */
 	void restoreState(EnumeratorState state) {
-		_currentIndex = state.getIndex();
+		_currentIndex = state.getCurrentIndex();
 	}
 	
 	/**

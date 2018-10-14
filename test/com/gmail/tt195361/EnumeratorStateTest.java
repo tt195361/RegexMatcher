@@ -24,7 +24,21 @@ public class EnumeratorStateTest {
 	
 	private void checkEquals(
 			EnumeratorState enumState, Object obj, boolean expected, String message) {
-		boolean actual = enumState.equals(obj);
+		final boolean actual = enumState.equals(obj);
+		assertEquals(message, expected, actual);
+	}
+	
+	@Test
+	public void testHashCode() {
+		checkHashCode(1, "currentIndex ‚Ì’l‚ª hashCode: 1");
+		checkHashCode(2, "currentIndex ‚Ì’l‚ª hashCode: 2");
+		checkHashCode(3, "currentIndex ‚Ì’l‚ª hashCode: 3");
+	}
+	
+	private void checkHashCode(int currentIndex, String message) {
+		EnumeratorState enumState = new EnumeratorState(currentIndex);
+		final int expected = currentIndex;
+		final int actual = enumState.hashCode();
 		assertEquals(message, expected, actual);
 	}
 }

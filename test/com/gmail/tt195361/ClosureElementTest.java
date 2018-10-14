@@ -4,7 +4,7 @@ import java.util.HashSet;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
-public class CloureElementTest {
+public class ClosureElementTest {
 
 	private final String DontCare = null;
 	
@@ -52,7 +52,7 @@ public class CloureElementTest {
 
 		checkRepeatElement(
 				endOfStringElem, "", 0, true, "",
-				"'$*' ‚Í •¶š—ñ‚Ì––”ö‚Æˆê’v‚·‚éB '$' ‚É‘±‚¢‚Ä '*' ‚ğ‘‚¢‚Ä‚àˆÓ–¡‚Í‚È‚¢");
+				"'$*' ‚Í •¶š—ñ‚ÌÅŒã‚Æˆê’v‚·‚éB '$' ‚É‘±‚¢‚Ä '*' ‚ğ‘‚¢‚Ä‚àˆÓ–¡‚Í‚È‚¢");
 		checkRepeatElement(
 				endOfStringElem, "abc", 0, true, "",
 				"'$*' ‚Í•¶š—ñ‚Ì‚Ç‚±‚Å‚à 0 ‰ñˆÈã‚ÌŒJ‚è•Ô‚µ‚Å‹ó•¶š‚Æˆê’v‚·‚é");
@@ -84,11 +84,11 @@ public class CloureElementTest {
 	
 	private void checkRepeatElement(
 			RegexElement repeatElem, String str, int startIndex, boolean expectedResult,
-			String expectedMatchString, String message) {
+			String expectedSubstring, String message) {
 		ClosureElement closureElem = new ClosureElement(repeatElem);
 		ElementEnumerator elemEnum = ElementEnumerator.makeForUnitTest(closureElem);
 		checkOneMatch(
-				elemEnum, str, startIndex, expectedResult, expectedMatchString, message);
+				elemEnum, str, startIndex, expectedResult, expectedSubstring, message);
 	}
 	
 	@Test
@@ -100,32 +100,32 @@ public class CloureElementTest {
 		OneCharElement oneCharA = new OneCharElement('a');
 		OneCharElement oneCharD = new OneCharElement('d');
 		
-		checkTheRest(
+		checkMatchTheRest(
 				closureElem, endOfStringElem, "abc", true, "abc",
 				"'.*$' ‚Ì '.*' ‚Í Å’·‚ÌŒó•â 'abc' ‚Æˆê’v‚·‚é");
-		checkTheRest(
+		checkMatchTheRest(
 				closureElem, oneCharB, "abc", true, "ab",
 				"'.*b' ‚Ì '.*' ‚Í 1 •¶š‚ÌŒó•â 'a' ‚Æˆê’v‚·‚é");
-		checkTheRest(
+		checkMatchTheRest(
 				closureElem, oneCharA, "abc", true, "a",
 				"'.*a' ‚Ì '.*' ‚Í ‹ó•¶š—ñ‚ÌŒó•â‚Æˆê’v‚·‚é");
-		checkTheRest(
+		checkMatchTheRest(
 				closureElem, oneCharD, "abc", false, DontCare,
 				"'.*d' ‚Ì '.*' ‚Í‚Ç‚ÌŒó•â‚Æ‚àˆê’v‚µ‚È‚¢");
 	}
 	
-	private void checkTheRest(
+	private void checkMatchTheRest(
 			ClosureElement closureElem, RegexElement followingElem, String str,
-			boolean expectedResult, String expectedMatchString, String message) {
+			boolean expectedResult, String expectedSubstring, String message) {
 		ElementEnumerator elemEnum =
 				ElementEnumerator.makeForUnitTest(closureElem, followingElem);
 		checkOneMatch(
-				elemEnum, str, 0, expectedResult, expectedMatchString, message);
+				elemEnum, str, 0, expectedResult, expectedSubstring, message);
 	}
 	
 	private void checkOneMatch(
 			ElementEnumerator elemEnum, String str, int startIndex, boolean expectedResult,
-			String expectedMatchString, String message) {
+			String expectedSubstring, String message) {
 		ClosureElement closureElem = (ClosureElement)elemEnum.getCurrent();
 		StringEnumerator strEnum = new StringEnumerator(str, startIndex);
 		
@@ -133,8 +133,14 @@ public class CloureElementTest {
 		assertEquals("Result: " + message, expectedResult, actualResult);
 		
 		if (expectedResult) {
-			String actualMatchString = strEnum.getMatchString();
-			assertEquals("MatchString: " + message, expectedMatchString, actualMatchString);
+			String actualSubstring = strEnum.getSubstring();
+			assertEquals("Substring: " + message, expectedSubstring, actualSubstring);
 		}
+	}
+	
+	static void check(
+			ClosureElement expected, ClosureElement actual, String message) {
+		RegexElementTest.check(
+				expected.getRepeatElement(), actual.getRepeatElement(), message);
 	}
 }

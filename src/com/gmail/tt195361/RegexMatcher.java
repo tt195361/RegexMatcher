@@ -18,7 +18,7 @@ public class RegexMatcher {
 	 *   <li>{@code .} -- 任意の 1 文字と一致します。</li>
 	 *   <li>{@code ^} -- 正規表現パターンの先頭にある場合は、文字列の先頭と一致します。
 	 *   		それ以外の場合、その文字自身と一致します。</li>
-	 *   <li>{@code $} -- 正規表現パターンの最後にある場合は、文字列の末尾と一致します。
+	 *   <li>{@code $} -- 正規表現パターンの最後にある場合は、文字列の最後と一致します。
 	 *   		それ以外の場合は、その文字自身と一致します。</li>
 	 *   <li>{@code [ ]} -- {@code [ ]} 内で指定の文字の中の 1 文字と一致します。文字は以下のように指定します。
 	 *     <ul>
@@ -63,7 +63,7 @@ public class RegexMatcher {
 			_elemEnum.restoreState(_initialElemEnumState);
 			StringEnumerator strEnum = new StringEnumerator(str, startIndex);
 			if (matchFromCurrent(_elemEnum, strEnum)) {
-				String matchString = strEnum.getMatchString();
+				String matchString = strEnum.getSubstring();
 				return MatchResult.makeSuccessResult(startIndex, matchString);
 			}
 		}
@@ -84,7 +84,7 @@ public class RegexMatcher {
 	static boolean matchFromCurrent(ElementEnumerator elemEnum, StringEnumerator strEnum) {
 		// 正規表現要素が存在する間、繰り返します。
 		while (elemEnum.hasCurrent()) {
-			// 正規表現要素がまだ存在するにもかかわらず、文字列の終わりを超えていれば、一致は失敗です。
+			// 正規表現要素がまだ存在するにもかかわらず、文字列の終わりを越えていれば、一致は失敗です。
 			if (!strEnum.hasCurrentOrEnd()) {
 				return false;
 			}

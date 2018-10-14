@@ -96,7 +96,7 @@ public class CharClassParserTest {
 		StringEnumerator strEnum = new StringEnumerator(pattern, 0);
 		CharClassParser target = new CharClassParser();
 		CharClassElement actual = target.parse(strEnum);
-		RegexElementTest.checkCharClassElement(expected, actual, message);
+		CharClassElementTest.check(expected, actual, message);
 	}
 
 }
