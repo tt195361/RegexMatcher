@@ -11,10 +11,10 @@ public class StringEnumeratorTest {
 	public void isStart() {
 		checkIsStart(
 				"abc", new Boolean[] { true, false, false, false },
-				"現在位置が文字列の先頭ならば true");
+				"現在位置が文字列の最初ならば true");
 		checkIsStart(
 				"", new Boolean[] { true, false },
-				"空文字列でも現在位置が先頭ならば true");
+				"空文字列でも現在位置が最初ならば true");
 	}
 
 	private void checkIsStart(

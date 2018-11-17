@@ -11,34 +11,34 @@ package com.gmail.tt195361;
  * 文字列の終わりに移動し、次に終わりを越えた位置に移動します。
  * <ul>
  *   <li>現在位置は文字列中のそれぞれの文字を順に移動します。
- *   	この位置では {@link hasCurrent} と {@link hasCurrentOrEnd} が
- *   	{@code true} を返します。また、最初の文字では {@link isStart} が、
- *   	最後の文字では {@link isLast} が {@code true} を返します。</li>
+ *   	この位置では {@link #hasCurrent} と {@link #hasCurrentOrEnd} が
+ *   	{@code true} を返します。また、最初の文字では {@link #isStart} が、
+ *   	最後の文字では {@link #isLast} が {@code true} を返します。</li>
  *   <li>すべての文字を列挙したあとは、文字列の終わりに移動します。
- *   	この位置では {@link isEnd} と {@link hasCurrentOrEnd} が
+ *   	この位置では {@link #isEnd} と {@link #hasCurrentOrEnd} が
  *   	{@code true} を返します。</li>
  *   <li>さらに移動すると、文字列の終わりを越えた位置に移動します。
- *   	この位置では  {@link hasCurrent}, {@link isEnd}, 
- *   	{@link hasCurrentOrEnd} のすべてが {@code false} を返します。</li>
+ *   	この位置では  {@link #hasCurrent}, {@link #isEnd}, 
+ *   	{@link #hasCurrentOrEnd} のすべてが {@code false} を返します。</li>
  * </ul>
  * <p>
- * {@link getCurrentIndex} は、現在位置の値を取得します。
- * また {@link getCurrent} は、現在位置の文字を返します。
+ * {@link #getCurrentIndex} は、現在位置の値を取得します。
+ * また {@link #getCurrent} は、現在位置の文字を返します。
  * <p>
- * 文字列 "abc" を、開始位置 0 から列挙する場合、{@link moveNext} メソッドで
+ * 文字列 "abc" を、開始位置 0 から列挙する場合、{@link #moveNext} メソッドで
  * 現在位置を移動するたびに、それぞれのメソッドが返す値は以下のようになります。
  * <table
  * 		border="1" rules="all"
- * 		summary="{@link moveNext} の呼び出しと各メソッドの戻り値">
+ * 		summary="{@link #moveNext} の呼び出しと各メソッドの戻り値">
  *   <tr　align="center">
- *     <th>{@link moveNext}<br>呼び出し回数</th>
- *     <th>{@link hasCurrent}</th>
- *     <th>{@link hasCurrentOrEnd}</th>
- *     <th>{@link isStart}</th>
- *     <th>{@link isLast}</th>
- *     <th>{@link isEnd}</th>
- *     <th>{@link getCurrentIndex}</th>
- *     <th>{@link getCurrent}</th>
+ *     <th>{@link #moveNext}<br>呼び出し回数</th>
+ *     <th>{@link #hasCurrent}</th>
+ *     <th>{@link #hasCurrentOrEnd}</th>
+ *     <th>{@link #isStart}</th>
+ *     <th>{@link #isLast}</th>
+ *     <th>{@link #isEnd}</th>
+ *     <th>{@link #getCurrentIndex}</th>
+ *     <th>{@link #getCurrent}</th>
  *   </tr>
  *   <tr align="center">
  *     <td>0 回</td>
@@ -143,10 +143,10 @@ class StringEnumerator {
 	}
 	
 	/**
-	 * 現在位置が文字列の先頭かどうかを調べます。
+	 * 現在位置が文字列の最初かどうかを調べます。
 	 * 
-	 * @return 現在位置が文字列の先頭ならば {@code true} を、
-	 * 		先頭でなければ {@code false} を返します。
+	 * @return 現在位置が文字列の最初ならば {@code true} を、
+	 * 		最初でなければ {@code false} を返します。
 	 */
 	boolean isStart() {
 		return _currentIndex == 0;
@@ -170,6 +170,16 @@ class StringEnumerator {
 	 */
 	boolean isEnd() {
 		return _length == _currentIndex;
+	}
+	
+	/**
+	 * 指定の文字列の終了位置の値を取得します。
+	 * 
+	 * @param str 終了位置の値を取得する文字列です。
+	 * @return 指定の文字列の終了位置の値を返します。
+	 */
+	static int getEndIndex(String str) {
+		return str.length();
 	}
 
 	/**

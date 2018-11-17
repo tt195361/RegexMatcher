@@ -13,7 +13,7 @@ class ClosureElement extends RegexElement {
 	/**
 	 * 指定の繰り返す要素を持つ {@link ClosureElement} クラスのオブジェクトを作成します。
 	 * 
-	 * @param repeatElement　繰り返す正規表現要素を指定します。
+	 * @param repeatElement 繰り返す正規表現要素を指定します。
 	 */
 	ClosureElement(RegexElement repeatElement) {
 		_repeatElement = repeatElement;

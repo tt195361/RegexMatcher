@@ -1,7 +1,7 @@
 package com.gmail.tt195361;
 
 /**
- * 文字列の先頭に一致する正規表現要素です。
+ * 文字列の最初に一致する正規表現要素です。
  */
 class StartOfStringElement extends RegexElement {
 	
@@ -14,7 +14,7 @@ class StartOfStringElement extends RegexElement {
 
 	/**
 	 * この正規表現要素が文字列の現在位置と一致するかどうか調べます。
-	 * この正規表現要素は現在位置が文字列の先頭であれば、一致します。
+	 * この正規表現要素は現在位置が文字列の最初であれば、一致します。
 	 * 
 	 * @param elemEnum 正規表現要素の列挙子です。呼び出し後の現在位置は移動しません。
 	 * @param strEnum 文字列の列挙子です。呼び出し後の現在位置は移動しません。

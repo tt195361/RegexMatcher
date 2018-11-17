@@ -3,11 +3,11 @@ package com.gmail.tt195361;
 import java.util.*;
 
 /**
- * 文字列を正規表現パターンの指定として解釈します。
+ * 文字列を正規表現の文型の指定として解釈します。
  */
 class RegexParser {
 	
-	// 正規表現のパターンとして特別な意味を持つ文字の定義です。
+	// 正規表現の文型として特別な意味を持つ文字の定義です。
 	private static final char Any = '.';
 	private static final char Start = '^';
 	private static final char End = '$';
@@ -21,10 +21,10 @@ class RegexParser {
 	}
 	
 	/**
-	 * 指定の文字列を正規表現パターンとして解釈し、解釈した内容をもとに作成した
+	 * 指定の文字列を正規表現の文型として解釈し、解釈した内容をもとに作成した
 	 * {@link ElementEnumerator} クラスのオブジェクトを返します。
  	 *  
-	 * @param pattern 正規表現のパターンを指定する文字列です。
+	 * @param pattern 正規表現の文型を指定する文字列です。
 	 * @return 指定の文字列を解釈した結果を表わす {@link ElementEnumerator} クラスのオブジェクトを返します。
 	 */
 	static ElementEnumerator parse(String pattern) {
@@ -67,11 +67,11 @@ class RegexParser {
 			element = new AnyCharElement();
 		}
 		else if (ch == Start && strEnum.isStart()) {
-			// '^' がパターンの先頭にある場合は StartOfStringElement です。
+			// '^' が文型の最初にある場合は StartOfStringElement です。
 			element = new StartOfStringElement();
 		}
 		else if (ch == End && strEnum.isLast()) {
-			// '$' がパターンの最後にある場合は EndOfStringElement です。
+			// '$' が文型の最後にある場合は EndOfStringElement です。
 			element = new EndOfStringElement();
 		}
 		else if (ch == Closure && lastElem != null) {
@@ -81,7 +81,7 @@ class RegexParser {
 			removeLastElem = true;
 		}
 		else if (ch == CharClassStart && !strEnum.isLast()) {
-			// '[' がパターンの最後でなければ、以降を文字クラスとして解釈し、CharClassElement を作成します。
+			// '[' が文型の最後でなければ、以降を文字クラスとして解釈し、CharClassElement を作成します。
 			CharClassParser charClassParser = new CharClassParser();
 			element =  charClassParser.parse(strEnum);
 		}

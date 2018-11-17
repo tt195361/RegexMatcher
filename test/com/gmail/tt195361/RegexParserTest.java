@@ -20,13 +20,13 @@ public class RegexParserTest {
 				ElementEnumerator.makeForUnitTest(
 						new StartOfStringElement(),
 						new OneCharElement('a')),
-				"æ“ª‚Ì '^' -> s“ª ");
+				"Å‰‚Ì '^' -> •¶Žš—ñ‚ÌÅ‰ ");
 		checkParse(
 				"a^",
 				ElementEnumerator.makeForUnitTest(
 						new OneCharElement('a'),
 						new OneCharElement('^')),
-				"æ“ªˆÈŠO‚Ì '^' -> •¶Žš '^'");
+				"Å‰ˆÈŠO‚Ì '^' -> •¶Žš '^'");
 	}
 
 	@Test

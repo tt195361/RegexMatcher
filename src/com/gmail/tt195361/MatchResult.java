@@ -9,7 +9,7 @@ public class MatchResult {
 	 * 一致に成功した場合の結果を作成します。
 	 * 
 	 * @param startIndex 一致が開始した文字列のインデックスです。
-	 * @param matchString　正規表現が一致した部分の文字列です。
+	 * @param matchString 正規表現が一致した部分の文字列です。
 	 * @return パラメータで指定した内容を持つ一致に成功した結果を格納する {@link MatchResult} クラスの
 	 * 		オブジェクトを作成して返します。
 	 */

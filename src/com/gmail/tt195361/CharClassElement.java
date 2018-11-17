@@ -42,13 +42,13 @@ class CharClassElement extends RegexElement {
 	
 	/**
 	 * この正規表現要素が文字列の現在位置から一致するかどうかを調べます。
-	 * 文字クラスは、現在位置に文字があり、かつ、現在位置の文字が {@link getNotContains} と
-	 * {@link getCharSet} の返す値と、以下のいずれかの条件を満たす場合に一致します。
+	 * 文字クラスは、現在位置に文字があり、かつ、現在位置の文字が {@link #getNotContains} と
+	 * {@link #getCharSet} の返す値と、以下のいずれかの条件を満たす場合に一致します。
 	 * <ul>
-	 *   <li>{@link getNotContains} が {@code false} を返す場合、
-	 *   	現在位置の文字が {@link getCharSet} の返す {@link HashSet} に含まれている。</li>
-	 *   <li>{@link getNotContains} が {@code true} を返す場合、
-	 *   	現在位置の文字が {@link getCharSet} の返す {@link HashSet} に含まれていない。</li>
+	 *   <li>{@link #getNotContains} が {@code false} を返す場合、
+	 *   	現在位置の文字が {@link #getCharSet} の返す {@link HashSet} に含まれている。</li>
+	 *   <li>{@link #getNotContains} が {@code true} を返す場合、
+	 *   	現在位置の文字が {@link #getCharSet} の返す {@link HashSet} に含まれていない。</li>
 	 * </ul>
 	 * 
 	 * @param elemEnum 正規表現要素の列挙子です。呼び出し後の現在位置は移動しません。

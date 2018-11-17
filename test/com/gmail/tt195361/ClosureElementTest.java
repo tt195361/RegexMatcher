@@ -76,10 +76,10 @@ public class ClosureElementTest {
 
 		checkRepeatElement(
 				startOfStringElem, "abc", 0, true, "",
-				"'^*' ‚Í •¶š—ñ‚Ìæ“ª‚Æˆê’v‚·‚éB'^' ‚É‘±‚¢‚Ä '*' ‚ğ‘‚¢‚Ä‚àˆÓ–¡‚Í‚È‚¢");
+				"'^*' ‚Í •¶š—ñ‚ÌÅ‰‚Æˆê’v‚·‚éB'^' ‚É‘±‚¢‚Ä '*' ‚ğ‘‚¢‚Ä‚àˆÓ–¡‚Í‚È‚¢");
 		checkRepeatElement(
 				startOfStringElem, "abc", 1, true, "",
-				"'^*' ‚Í•¶š—ñ‚Ìæ“ª‚Å‚È‚­‚Ä‚à 0 ‰ñˆÈã‚ÌŒJ‚è•Ô‚µ‚Å‹ó•¶š‚Æˆê’v‚·‚é");
+				"'^*' ‚Í•¶š—ñ‚ÌÅ‰‚Å‚È‚­‚Ä‚à 0 ‰ñˆÈã‚ÌŒJ‚è•Ô‚µ‚Å‹ó•¶š‚Æˆê’v‚·‚é");
 	}
 	
 	private void checkRepeatElement(

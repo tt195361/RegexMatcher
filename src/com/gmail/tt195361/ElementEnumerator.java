@@ -9,15 +9,15 @@ import java.util.List;
  * 列挙子は、列挙する要素のコレクションを保持するとともに、その中の一つの要素を指し示す現在位置を管理します。
  * 以下のメソッドを用いて、列挙子の現在位置を取り扱い、コレクションの要素を列挙します。
  * <ul>
- *   <li>{@link hasCurrent} メソッドで、現在位置に要素があるかどうかを調べます。</li>
- *   <li>{@link getCurrent} メソッドで、現在位置の要素を取得します。</li>
- *   <li>{@link moveNext} メソッドで、現在位置を次の要素に移動します。</li>
+ *   <li>{@link #hasCurrent} メソッドで、現在位置に要素があるかどうかを調べます。</li>
+ *   <li>{@link #getCurrent} メソッドで、現在位置の要素を取得します。</li>
+ *   <li>{@link #moveNext} メソッドで、現在位置を次の要素に移動します。</li>
  * </ul>
  * <p>
  * 列挙子の状態を保存し、保存した状態に復元するには、以下のメソッドを使います。
  * <ul>
- *   <li>{@link saveState} メソッドで、列挙子の現在の状態を保存します。</li>
- *   <li>{@link restoreState} メソッドで、列挙子を保存された状態に戻します。</li>
+ *   <li>{@link #saveState} メソッドで、列挙子の現在の状態を保存します。</li>
+ *   <li>{@link #restoreState} メソッドで、列挙子を保存された状態に戻します。</li>
  * </ul>
  */
 class ElementEnumerator {

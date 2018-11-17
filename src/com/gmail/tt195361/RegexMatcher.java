@@ -1,7 +1,7 @@
 package com.gmail.tt195361;
 
 /**
- * 指定のパターンを持つ正規表現が指定の文字列と一致するかどうかを調べます。
+ * 指定の文型を持つ正規表現が指定の文字列と一致するかどうかを調べます。
  */
 public class RegexMatcher {
 	
@@ -10,40 +10,13 @@ public class RegexMatcher {
 	private final EnumeratorState _initialElemEnumState;
 
 	/**
-	 * 指定のパターンを持つ正規表現を表わす {@link RegexMatcher} クラスのオブジェクトを生成します。
+	 * 指定の文型を持つ正規表現を表わす {@link RegexMatcher} クラスのオブジェクトを生成します。
 	 * 
-	 * <p>
-	 * このプログラムでは、正規表現パターン中のそれぞれの文字を以下のように解釈します。
-	 * <ul>
-	 *   <li>{@code .} -- 任意の 1 文字と一致します。</li>
-	 *   <li>{@code ^} -- 正規表現パターンの先頭にある場合は、文字列の先頭と一致します。
-	 *   		それ以外の場合、その文字自身と一致します。</li>
-	 *   <li>{@code $} -- 正規表現パターンの最後にある場合は、文字列の最後と一致します。
-	 *   		それ以外の場合は、その文字自身と一致します。</li>
-	 *   <li>{@code [ ]} -- {@code [ ]} 内で指定の文字の中の 1 文字と一致します。文字は以下のように指定します。
-	 *     <ul>
-	 *       <li>文字 -- 指定の文字を含めます。たとえば、 {@code abc} は、
-	 *       		{@code a}, {@code b}, {@code c} のそれぞれの文字を指定します。</li>
-	 *       <li>開始文字{@code -}終了文字 -- 開始文字と終了文字を {@code -} で区切ると、
-	 *       		その範囲の文字を指定します。たとえば、{@code A-Z} は英大文字
-	 *       		({@code A}, {@code B}, ..., {@code Z}) を、{@code 0-9} は数字
-	 *       		({@code 0}, {@code 1}, ..., {@code 9}) を表わします。</li>
-	 *     </ul>
-	 *   </li>
-	 *   <li>{@code [^ ]} -- {@code [ ]} 内で指定の文字の中の 1 文字以外と一致します。</li>
-	 *   <li>{@code *} -- この前の要素の 0 回以上の繰り返しと一致します。たとえば、{@code a*} は
-	 *   			{@code a} の 0 回以上の繰り返し、{@code .*} は任意の文字の 0 回以上の
-	 *   			繰返し、{@code [0-9]*} は数字の 0 回以上の繰り返しと一致します。</li>
-	 *   <li>{@code \} -- この後の文字をその文字自身として取り扱います。{@code [ ]} 内でも使えます。
-	 *   	たとえば {@code \.} は、{@code .} の特別な意味を打ち消し、{@code .} として取り扱います。
-	 *   	また、{@code \\} は {@code \} を意味します。</li>
-	 *   <li>上記以外の文字は、その文字自身と一致します。</li>
-	 * </ul>
-	 * 
-	 * @param pattern　正規表現のパターンを指定する文字列です。
+	 * @param pattern 正規表現の文型を指定する文字列です。
 	 */
 	public RegexMatcher(String pattern) {
-		// 正規表現のパターンを表わす文字列を解釈し、それを要素に分解し、それぞれの要素を列挙する列挙子を作成します。
+		// 正規表現の文型を表わす文字列を解釈し、それを要素に分解し、それぞれの要素を列挙する
+		// 列挙子を作成します。
 		_elemEnum = RegexParser.parse(pattern);
 		// 正規表現要素の列挙子を初期状態に戻すため、その状態を保存します。
 		_initialElemEnumState = _elemEnum.saveState();
@@ -52,13 +25,14 @@ public class RegexMatcher {
 	/**
 	 * この正規表現が指定の文字列と一致するかどうかを調べます。
 	 * 
-	 * @param str　正規表現と一致するかどうかを調べる文字列です。
+	 * @param str 正規表現と一致するかどうかを調べる文字列です。
 	 * @return 一致を調べた結果を格納する {@link MatchResult} クラスのオブジェクトを返します。
 	 */
 	public MatchResult match(String str) {
 		// 指定の文字列のそれぞれの位置で、正規表現が一致するかどうかを調べます。
-		// 文字列の最後に一致することがあるので、length() + 1 まで調べます。
-		for (int startIndex = 0; startIndex < str.length() + 1; ++startIndex) {
+		// 文字列の最後に一致することがあるので、StringEnumerator.getEndIndex() まで調べます。
+		int endIndex = StringEnumerator.getEndIndex(str);
+		for (int startIndex = 0; startIndex <= endIndex; ++startIndex) {
 			// 正規表現要素の列挙子を最初に戻し、文字列の startIndex の位置から一致するか調べます。
 			_elemEnum.restoreState(_initialElemEnumState);
 			StringEnumerator strEnum = new StringEnumerator(str, startIndex);
