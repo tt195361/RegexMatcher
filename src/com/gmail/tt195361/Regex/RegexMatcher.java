@@ -5,9 +5,9 @@ package com.gmail.tt195361.Regex;
  */
 public class RegexMatcher {
 	
-	// メンバ－変数: 正規表現を表わす文字列から作成した正規表現要素の列挙子と、その初期状態です。
-	private final ElementEnumerator _elemEnum;
-	private final EnumeratorState _initialElemEnumState;
+	// メンバ－変数: 正規表現を表わす文字列から作成した正規表現文型の列挙子と、その初期状態です。
+	private final PatternEnumerator _patEnum;
+	private final EnumeratorState _initialPatEnumState;
 
 	/**
 	 * 指定の文型を持つ正規表現を表わす {@link RegexMatcher} クラスのオブジェクトを生成します。
@@ -15,11 +15,11 @@ public class RegexMatcher {
 	 * @param pattern 正規表現の文型を指定する文字列です。
 	 */
 	public RegexMatcher(String pattern) {
-		// 正規表現の文型を表わす文字列を解釈し、それを要素に分解し、それぞれの要素を列挙する
+		// 正規表現の文型を表わす文字列を解釈し、一つ一つの文型に分解し、その文型を順に列挙する
 		// 列挙子を作成します。
-		_elemEnum = RegexParser.parse(pattern);
-		// 正規表現要素の列挙子を初期状態に戻すため、その状態を保存します。
-		_initialElemEnumState = _elemEnum.saveState();
+		_patEnum = RegexParser.parse(pattern);
+		// 正規表現文型の列挙子を初期状態に戻すため、その状態を保存します。
+		_initialPatEnumState = _patEnum.saveState();
 	}
 	
 	/**
@@ -33,10 +33,10 @@ public class RegexMatcher {
 		// 文字列の最後に一致することがあるので、StringEnumerator.getEndIndex() まで調べます。
 		int endIndex = StringEnumerator.getEndIndex(str);
 		for (int startIndex = 0; startIndex <= endIndex; ++startIndex) {
-			// 正規表現要素の列挙子を最初に戻し、文字列の startIndex の位置から一致するか調べます。
-			_elemEnum.restoreState(_initialElemEnumState);
+			// 正規表現文型の列挙子の状態を最初に戻し、文字列の startIndex の位置から一致するか調べます。
+			_patEnum.restoreState(_initialPatEnumState);
 			StringEnumerator strEnum = new StringEnumerator(str, startIndex);
-			if (matchFromCurrent(_elemEnum, strEnum)) {
+			if (matchFromCurrent(_patEnum, strEnum)) {
 				String matchString = strEnum.getSubstring();
 				return MatchResult.makeSuccessResult(startIndex, matchString);
 			}
@@ -47,33 +47,33 @@ public class RegexMatcher {
 	}
 	
 	/**
-	 * 正規表現要素と文字列のそれぞれの現在位置から、正規表現要素が文字列に一致するかどうかを調べます。
+	 * 正規表現文型と文字列のそれぞれの現在位置から、正規表現文型が文字列に一致するかどうかを調べます。
 	 * 
-	 * @param elemEnum 正規表現要素の列挙子です。呼び出し後の現在位置は
-	 * 				最後に一致に成功した要素の次に移動します。
+	 * @param patEnum 正規表現文型の列挙子です。呼び出し後の現在位置は
+	 * 				最後に一致に成功した文型の次に移動します。
 	 * @param strEnum 文字列の列挙子です。呼び出し後の現在位置は
-	 * 				正規表現要素と一致した部分の次の文字に移動します。
+	 * 				正規表現文型と一致した部分の次の文字に移動します。
 	 * @return　一致に成功した場合は {@code true} を、失敗した場合は {@code false} を返します。
 	 */
-	static boolean matchFromCurrent(ElementEnumerator elemEnum, StringEnumerator strEnum) {
-		// 正規表現要素が存在する間、繰り返します。
-		while (elemEnum.hasCurrent()) {
-			// 正規表現要素がまだ存在するにもかかわらず、文字列の終わりを越えていれば、一致は失敗です。
+	static boolean matchFromCurrent(PatternEnumerator patEnum, StringEnumerator strEnum) {
+		// 正規表現文型が存在する間、繰り返します。
+		while (patEnum.hasCurrent()) {
+			// 正規表現文型がまだ存在するにもかかわらず、文字列の終わりを越えていれば、一致は失敗です。
 			if (!strEnum.hasCurrentOrEnd()) {
 				return false;
 			}
 			
-			// 現在の正規表現要素が文字列に一致するかどうか調べます。一致しなければ失敗です。
-			RegexElement currentElem = elemEnum.getCurrent();
-			if (!currentElem.oneMatch(elemEnum, strEnum)) {
+			// 現在の正規表現文型が文字列に一致するかどうか調べます。一致しなければ失敗です。
+			RegexPattern currentPat = patEnum.getCurrent();
+			if (!currentPat.oneMatch(patEnum, strEnum)) {
 				return false;
 			}
 			
-			// 現在の正規表現要素の一致に成功したので、次の正規表現要素に移動します。
-			elemEnum.moveNext();
+			// 現在の正規表現文型の一致に成功したので、次の正規表現文型に移動します。
+			patEnum.moveNext();
 		}
 
-		// すべての正規表現要素が文字列の現在位置から一致したので、文字列の一致に成功です。
+		// すべての正規表現文型が文字列の現在位置から一致したので、成功です。
 		return true;
 	}
 }

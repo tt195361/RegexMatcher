@@ -32,7 +32,7 @@ class CharClassParser {
 	}
 	
 	/**
-	 * 指定の文字列を文字クラスの指定として解釈し、解釈した内容をもとに作成した {@link CharClassElement} の
+	 * 指定の文字列を文字クラスの指定として解釈し、解釈した内容をもとに作成した {@link CharClassPattern} の
 	 * オブジェクトを返します。
 	 *
 	 * <p>
@@ -64,9 +64,9 @@ class CharClassParser {
 	 * 
 	 * @param strEnum 解釈する文字列の列挙子です。呼び出し時の現在位置は、文字クラスの指定の最初の文字
 	 * 			であるものとします。 呼び出し後の現在位置は最後に解釈した文字に移動します。
-	 * @return 解釈した内容をもとに作成した {@link CharClassElement} のオブジェクトを返します。
+	 * @return 解釈した内容をもとに作成した {@link CharClassPattern} のオブジェクトを返します。
 	 */
-	CharClassElement parse(StringEnumerator strEnum) {
+	CharClassPattern parse(StringEnumerator strEnum) {
 		// 最初の文字をまたぎ越し、次が '^' かどうか調べます。
 		strEnum.moveNext();
 		boolean notContains = parseCharClassNotContains(strEnum);
@@ -82,9 +82,9 @@ class CharClassParser {
 			strEnum.moveNext();
 		}
 		
-		// 読み込んだが処理されずに残っている文字があれば _charSet に追加し、CharClassElement を返します。
+		// 読み込んだが処理されずに残っている文字があれば _charSet に追加し、CharClassPattern を返します。
 		_state.addRemainingChars();
-		return new CharClassElement(notContains, _charSet);
+		return new CharClassPattern(notContains, _charSet);
 	}
 	
 	// '含まれていない' の '^' の指定を解釈します。
@@ -115,9 +115,10 @@ class CharClassParser {
 				_state.getClass().getSimpleName(), _startCh, _charSet.toString());
 	}
 	
-	// パーサーの状態を表わす抽象クラスです。
-	// 状態は、(1) 初期状態 (InitialState)、(2) 開始文字を読み込んだ状態 (StartCharReadState)、
-	// (3) 開始文字に続いて範囲を指定する '-' を読み込んだ状態 (RangeReadState)、の 3 つです。
+	// パーサーの状態を表わす抽象クラスです。状態は、以下の 3 つです。
+	//   (1) 初期状態 (InitialState)
+	//   (2) 開始文字を読み込んだ状態 (StartCharReadState)
+	//   (3) 開始文字に続いて範囲を指定する '-' を読み込んだ状態 (RangeReadState)
 	private abstract class ParserState {
 		// 状態に応じて文字を読み込み、次に遷移する状態を返します。
 		abstract ParserState read(char ch, StringEnumerator strEnum);

@@ -61,7 +61,7 @@
  *   </tr>
  *   <tr>
  *     <td align="center">{@code *}</td>
- *     <td>この前の要素の 0 回以上の繰り返しと一致します。たとえば、{@code a*} は
+ *     <td>この前の文型の 0 回以上の繰り返しと一致します。たとえば、{@code a*} は
  *   		{@code a} の 0 回以上の繰り返し、{@code .*} は任意の文字の 0 回以上の
  *   		繰返し、{@code [0-9]*} は数字の 0 回以上の繰り返しと一致します。</td>
  *   </tr>
@@ -127,8 +127,8 @@
  * <p>
  * 正規表現の文字列から作成するプログラムの内部表現は、以下の通りです。
  * <ul>
- *   <li>取り扱うそれぞれの正規表現の要素について、その要素を表わすクラスを作成します。</li>
- *   <li>それぞれの正規表現の要素を表わすクラスは、抽象クラス {@link com.gmail.tt195361.Regex.RegexElement} から派生させます。</li>
+ *   <li>取り扱うそれぞれの正規表現の文型について、その文型を表わすクラスを作成します。</li>
+ *   <li>それぞれの正規表現の文型を表わすクラスは、抽象クラス {@link com.gmail.tt195361.Regex.RegexPattern} から派生させます。</li>
  *   <li>. . . . .</li>
  * </ul>
  * <table
@@ -153,33 +153,33 @@
  *     <td>CharClassParser</td>
  *   </tr>
  *   <tr>
- *     <td>ElementParseResult</td>
+ *     <td>PatternParseResult</td>
  *   </tr>
  *   <tr>
  *     <td rowspan="7" valign="top">正規表現の一つの文型</td>
- *     <td>RegexElement</td>
+ *     <td>RegexPattern</td>
  *   </tr>
  *   <tr>
- *     <td>AnyCharElement</td>
+ *     <td>AnyCharPattern</td>
  *   </tr>
  *   <tr>
- *     <td>CharClassElement</td>
+ *     <td>CharClassPattern</td>
  *   </tr>
  *   <tr>
- *     <td>ClosureElement</td>
+ *     <td>ClosurePattern</td>
  *   </tr>
  *   <tr>
- *     <td>EndOfStringElement</td>
+ *     <td>EndOfStringPattern</td>
  *   </tr>
  *   <tr>
- *     <td>OneCharElement</td>
+ *     <td>OneCharPattern</td>
  *   </tr>
  *   <tr>
- *     <td>StartOfStringElement</td>
+ *     <td>StartOfStringPattern</td>
  *   </tr>
  *   <tr>
  *     <td rowspan="3" valign="top">コレクションの項目の列挙</td>
- *     <td>ElementEnumerator</td>
+ *     <td>PatternEnumerator</td>
  *   </tr>
  *   <tr>
  *     <td>StringEnumerator</td>
