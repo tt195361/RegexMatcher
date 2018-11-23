@@ -94,15 +94,8 @@ class RegexParser {
 		return new PatternParseResult(pattern, removeLastPat);
 	}
 
-	/**
-	 * 文字のエスケープを解釈し、解釈した結果の文字を返します。
-	 * 
-	 * @param ch 解釈する文字です。
-	 * @param strEnum 文字列の列挙子です。呼び出し時の現在位置は、解釈する文字の位置であるものとします。
-	 * 			呼び出し後の現在位置は最後に解釈した文字に移動します。
-	 * @return 解釈した結果の文字を返します。
-	 */
-	static char parseEscapeChar(char ch, StringEnumerator strEnum) {
+	// 文字のエスケープを解釈し、解釈した結果の文字を返します。
+	private static char parseEscapeChar(char ch, StringEnumerator strEnum) {
 		if	(ch != Escape) {
 			// Escape でなければ、その文字です。
 			return ch;

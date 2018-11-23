@@ -61,6 +61,13 @@ class CharClassParser {
 	 *    <li>1 文字だけの指定、</li>
 	 *    <li>あるいは、開始文字に続いて {@code '-'} と終了文字を記述する範囲指定。</li>
 	 * </ul>
+	 * <p>
+	 * '-', ']', '\' については、以下のように取り扱います。
+	 * <ul>
+	 *   <li>'-' は、ブラケット内の最初 ('^' のすぐ後ろも含む) か最後にあるときは、リテラルとして取り扱います。</li>
+	 *   <li>']' は、ブラケット内の最初 ('^' のすぐ後ろも含む) にあるときは、リテラルとして取り扱います。</li>
+	 *   <li>'\' (バックスラッシュ) によるエスケープは取り扱いません。</li>
+	 * </ul>
 	 * 
 	 * @param strEnum 解釈する文字列の列挙子です。呼び出し時の現在位置は、文字クラスの指定の最初の文字
 	 * 			であるものとします。 呼び出し後の現在位置は最後に解釈した文字に移動します。
@@ -72,14 +79,15 @@ class CharClassParser {
 		boolean notContains = parseCharClassNotContains(strEnum);
 		
 		// 現在の文字があり、それが ']' でなければ、状態に応じて読み込み、状態遷移し、次の文字に移動します。
+		boolean firstChar = true;
 		while (strEnum.hasCurrent()) {
 			char ch = strEnum.getCurrent();
-			if (ch == CharClassEnd) {
+			if (!firstChar && ch == CharClassEnd) {
 				break;
 			}
 			
 			_state = _state.read(ch, strEnum);
-			strEnum.moveNext();
+			firstChar = false;
 		}
 		
 		// 読み込んだが処理されずに残っている文字があれば _charSet に追加し、CharClassPattern を返します。
@@ -131,7 +139,8 @@ class CharClassParser {
 		@Override
 		ParserState read(char ch, StringEnumerator strEnum) {
 			// 開始文字を読み込み、StartCharRead 状態に遷移します。
-			_startCh = RegexParser.parseEscapeChar(ch, strEnum);
+			_startCh = ch;
+			strEnum.moveNext();
 			return _startCharReadState;
 		}
 		
@@ -147,13 +156,14 @@ class CharClassParser {
 		ParserState read(char ch, StringEnumerator strEnum) {
 			if (ch == CharClassRange) {
 				// 現在の文字が '-' ならば、RangeRead　状態に遷移します。
+				strEnum.moveNext();
 				return _rangeReadState;
 			}
 			else {
-				// それ以外ならば、開始文字を 1 文字の指定として _charSet に追加し、
-				// あらためて初期状態から範囲開始の文字を読み込みます。
+				// それ以外ならば、読み込んだ開始文字を 1 文字の指定として _charSet に追加し、
+				// 次の文字は処理せず、初期状態に戻ります。
 				_charSet.add(_startCh);
-				return _initialState.read(ch, strEnum);
+				return _initialState;
 			}
 		}
 		
@@ -169,7 +179,8 @@ class CharClassParser {
 		@Override
 		ParserState read(char ch, StringEnumerator strEnum) {
 			// 終了文字を読み込み、指定範囲の文字を _charSet に追加し、Initial 状態に戻ります。
-			char endCh = RegexParser.parseEscapeChar(ch, strEnum);
+			char endCh = ch;
+			strEnum.moveNext();
 			
 			char minCh = MathUtils.minCh(_startCh, endCh);
 			char maxCh = MathUtils.maxCh(_startCh, endCh);
