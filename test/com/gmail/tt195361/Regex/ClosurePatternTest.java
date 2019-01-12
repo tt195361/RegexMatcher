@@ -86,7 +86,7 @@ public class ClosurePatternTest {
 			RegexPattern repeatPat, String str, int startIndex, boolean expectedResult,
 			String expectedSubstring, String message) {
 		ClosurePattern closurePat = new ClosurePattern(repeatPat);
-		PatternEnumerator patEnum = PatternEnumerator.makeForUnitTest(closurePat);
+		PatternEnumerator patEnum = PatternEnumeratorTest.make(closurePat);
 		checkOneMatch(
 				patEnum, str, startIndex, expectedResult, expectedSubstring, message);
 	}
@@ -118,7 +118,7 @@ public class ClosurePatternTest {
 			ClosurePattern closurePat, RegexPattern followingPat, String str,
 			boolean expectedResult, String expectedSubstring, String message) {
 		PatternEnumerator patEnum =
-				PatternEnumerator.makeForUnitTest(closurePat, followingPat);
+				PatternEnumeratorTest.make(closurePat, followingPat);
 		checkOneMatch(
 				patEnum, str, 0, expectedResult, expectedSubstring, message);
 	}
@@ -127,7 +127,8 @@ public class ClosurePatternTest {
 			PatternEnumerator patEnum, String str, int startIndex, boolean expectedResult,
 			String expectedSubstring, String message) {
 		ClosurePattern closurePat = (ClosurePattern)patEnum.getCurrent();
-		StringEnumerator strEnum = new StringEnumerator(str, startIndex);
+		StringEnumerator strEnum = new StringEnumerator(str);
+		strEnum.setStartIndexForUnitTest(startIndex);
 		
 		boolean actualResult = closurePat.oneMatch(patEnum, strEnum);
 		assertEquals("Result: " + message, expectedResult, actualResult);

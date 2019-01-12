@@ -1,9 +1,7 @@
 package com.gmail.tt195361.Regex;
 
-import java.util.List;
-
 /**
- * 正規表現の一つの文型を表わす {@link RegexPattern} のオブジェクトを順に列挙する列挙子です。
+ * 正規表現の一つの文型を表わす {@link RegexPattern} のオブジェクトを管理し順に列挙する列挙子です。
  * 
  * <p>
  * 列挙子は、列挙する項目のコレクションを保持するとともに、その中の一つの項目を指し示す現在位置を管理します。
@@ -22,23 +20,17 @@ import java.util.List;
  */
 class PatternEnumerator {
 
-	// メンバー変数: 列挙する正規表現文型の配列、その配列の長さ、現在位置です。
+	// メンバー変数: 列挙する正規表現文型の配列、その現在位置です。
 	private final RegexPattern[] _patterns;
-	private final int _length;
 	private int _currentIndex;
 	
 	/**
-	 * 指定のリストの正規表現文型を列挙する列挙子を作成します。
+	 * 指定の正規表現文型を列挙する列挙子を作成します。
 	 * 
-	 * @param patList 列挙する正規表現文型を格納したリストです。
+	 * @param patterns 列挙する正規表現文型を格納する配列です。
 	 */
-	PatternEnumerator(List<RegexPattern> patList) {
-		this(patList.toArray(new RegexPattern[0]));
-	}
-	
-	private PatternEnumerator(RegexPattern[] patterns) {
+	PatternEnumerator(RegexPattern[] patterns) {
 		_patterns = patterns;
-		_length = patterns.length;
 		_currentIndex = 0;
 	}
 	
@@ -48,16 +40,7 @@ class PatternEnumerator {
 	 * @return 現在位置に文型がある場合は {@code true} を、文型がない場合は {@code false} を返します。
 	 */
 	boolean hasCurrent() {
-		return 0 <= _currentIndex && _currentIndex < _length;
-	}
-	
-	/**
-	 * 現在位置を次の文型に移動します。現在位置に文型がない場合は、現在位置をそれ以上移動しません。
-	 */
-	void moveNext() {
-		if (hasCurrent()) {
-			++_currentIndex;
-		}
+		return 0 <= _currentIndex && _currentIndex < _patterns.length;
 	}
 	
 	/**
@@ -71,6 +54,15 @@ class PatternEnumerator {
 		}
 		else {
 			return _patterns[_currentIndex];
+		}
+	}
+	
+	/**
+	 * 現在位置を次の文型に移動します。現在位置に文型がない場合は、現在位置をそれ以上移動しません。
+	 */
+	void moveNext() {
+		if (hasCurrent()) {
+			++_currentIndex;
 		}
 	}
 	
@@ -100,15 +92,5 @@ class PatternEnumerator {
 		RegexPattern current = getCurrent();
 		String currentStr = (current == null) ? "NULL" : current.toString();
 		return String.format("_index=%d, current=%s", _currentIndex, currentStr);
-	}
-	
-	/**
-	 * 指定の正規表現文型を列挙する列挙子を作成します、単体テストで使うためのメソッドです。
-	 * 
-	 * @param patterns 列挙する正規表現文型を指定します。
-	 * @return 作成した列挙子を返します。
-	 */
-	static PatternEnumerator makeForUnitTest(RegexPattern...patterns) {
-		return new PatternEnumerator(patterns);
 	}
 }

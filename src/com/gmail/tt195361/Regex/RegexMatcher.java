@@ -15,8 +15,8 @@ public class RegexMatcher {
 	 * @param pattern 正規表現の文型を指定する文字列です。
 	 */
 	public RegexMatcher(String pattern) {
-		// 正規表現の文型を表わす文字列を解釈し、一つ一つの文型に分解し、その文型を順に列挙する
-		// 列挙子を作成します。
+		// 正規表現の文型を表わす文字列を解釈し、一つ一つの文型に分解し、
+		// その文型を順に列挙する列挙子を作成します。
 		_patEnum = RegexParser.parse(pattern);
 		// 正規表現文型の列挙子を初期状態に戻すため、その状態を保存します。
 		_initialPatEnumState = _patEnum.saveState();
@@ -29,20 +29,23 @@ public class RegexMatcher {
 	 * @return 一致を調べた結果を格納する {@link MatchResult} クラスのオブジェクトを返します。
 	 */
 	public MatchResult match(String str) {
-		// 指定の文字列のそれぞれの位置で、正規表現が一致するかどうかを調べます。
-		// 文字列の最後に一致することがあるので、StringEnumerator.getEndIndex() まで調べます。
-		int endIndex = StringEnumerator.getEndIndex(str);
-		for (int startIndex = 0; startIndex <= endIndex; ++startIndex) {
-			// 正規表現文型の列挙子の状態を最初に戻し、文字列の startIndex の位置から一致するか調べます。
+		StringEnumerator strEnum = new StringEnumerator(str);
+
+		// 指定の文字列に調べられる開始位置が存在する間、一致を調べます。
+		while (strEnum.hasCurrentStart()) {
+
+			// 文字列は現在の開始位置から、文型は最初から、順に一致を調べます。
 			_patEnum.restoreState(_initialPatEnumState);
-			StringEnumerator strEnum = new StringEnumerator(str, startIndex);
 			if (matchFromCurrent(_patEnum, strEnum)) {
-				String matchString = strEnum.getSubstring();
-				return MatchResult.makeSuccessResult(startIndex, matchString);
+				// 一致に成功すれば、その結果を返します。
+				return MatchResult.makeSuccessResult(strEnum);
 			}
+
+			// 一致しなかった場合は、文字列の開始位置を次へ移動します。
+			strEnum.moveNextStart();
 		}
 		
-		// 文字列のすべての位置で正規表現が一致しなかったので、失敗の結果を作成し返します。
+		// 文字列のすべての開始位置で正規表現が一致しなかったので、失敗の結果を返します。
 		return MatchResult.makeFailResult();
 	}
 	

@@ -9,6 +9,8 @@ package com.gmail.tt195361.Regex;
  * <p>
  * 文字列の列挙子の現在位置は、次に説明するように、それぞれの文字を順に列挙したあと、
  * 文字列の終わりに移動し、次に終わりを越えた位置に移動します。
+ * 文字列の終わりには、正規表現の文型 {@code '$'} が一致します。
+ * そのため、一致の検査は文字列の終わりまで実施し、終わりを越えた位置で終了します。
  * <ul>
  *   <li>現在位置は文字列中のそれぞれの文字を順に移動します。
  *   	この位置では {@link #hasCurrent} と {@link #hasCurrentOrEnd} が
@@ -29,7 +31,7 @@ package com.gmail.tt195361.Regex;
  * 現在位置を移動するたびに、それぞれのメソッドが返す値は以下のようになります。
  * <table
  * 		border="1" rules="all"
- * 		summary="{@link #moveNext} の呼び出しと各メソッドの戻り値">
+ * 		summary="moveNext() の呼び出しと各メソッドの戻り値">
  *   <tr　align="center">
  *     <th>{@link #moveNext}<br>呼び出し回数</th>
  *     <th>{@link #hasCurrent}</th>
@@ -41,7 +43,7 @@ package com.gmail.tt195361.Regex;
  *     <th>{@link #getCurrent}</th>
  *   </tr>
  *   <tr align="center">
- *     <td>0 回</td>
+ *     <td>0</td>
  *     <td>{@code true}</td>
  *     <td>{@code true}</td>
  *     <td>{@code true}</td>
@@ -51,7 +53,7 @@ package com.gmail.tt195361.Regex;
  *     <td>'a'</td>
  *   </tr>
  *   <tr align="center">
- *     <td>1 回</td>
+ *     <td>1</td>
  *     <td>{@code true}</td>
  *     <td>{@code true}</td>
  *     <td>{@code false}</td>
@@ -61,7 +63,7 @@ package com.gmail.tt195361.Regex;
  *     <td>'b'</td>
  *   </tr>
  *   <tr align="center">
- *     <td>2 回</td>
+ *     <td>2</td>
  *     <td>{@code true}</td>
  *     <td>{@code true}</td>
  *     <td>{@code false}</td>
@@ -71,7 +73,7 @@ package com.gmail.tt195361.Regex;
  *     <td>'c'</td>
  *   </tr>
  *   <tr align="center">
- *     <td>3 回</td>
+ *     <td>3</td>
  *     <td>{@code false}</td>
  *     <td>{@code true}</td>
  *     <td>{@code false}</td>
@@ -81,7 +83,7 @@ package com.gmail.tt195361.Regex;
  *     <td>{@code '\0'}</td>
  *   </tr>
  *   <tr align="center">
- *     <td>4 回</td>
+ *     <td>4</td>
  *     <td>{@code false}</td>
  *     <td>{@code false}</td>
  *     <td>{@code false}</td>
@@ -94,23 +96,29 @@ package com.gmail.tt195361.Regex;
  */
 class StringEnumerator {
 	
-	// メンバー変数: 文字列、開始位置、文字列の長さ、現在位置を保持します。
+	// メンバー変数: 文字列、文字列の長さ、開始位置、現在位置を保持します。
 	private final String _str;
-	private final int _startIndex;
 	private final int _length;
+	private int _startIndex;
 	private int _currentIndex;
 	
 	/**
-	 * 指定の文字列のそれぞれの文字を指定の開始位置から列挙する列挙子を作成します。
+	 * 指定の文字列のそれぞれの文字を列挙する列挙子を作成します。
 	 * 
 	 * @param str それぞれの文字を列挙する文字列です。
-	 * @param startIndex 列挙の開始位置を指定します。文字列の最初の文字の位置は 0 になります。
 	 */
-	StringEnumerator(String str, int startIndex) {
+	StringEnumerator(String str) {
 		_str = str;
-		_startIndex = startIndex;
 		_length = str.length();
-		_currentIndex = startIndex;
+		setStartAndCurrentIndex(0);
+	}
+	
+	private void setStartAndCurrentIndex(int value) {
+		_startIndex = _currentIndex = value;
+	}
+	
+	private void setCurrentIndex(int value) {
+		_currentIndex = value;
 	}
 	
 	/**
@@ -119,7 +127,7 @@ class StringEnumerator {
 	 */
 	void moveNext() {
 		if (hasCurrentOrEnd()) {
-			++_currentIndex;
+			setCurrentIndex(_currentIndex + 1);
 		}
 	}
 	
@@ -171,16 +179,6 @@ class StringEnumerator {
 	boolean isEnd() {
 		return _length == _currentIndex;
 	}
-	
-	/**
-	 * 指定の文字列の終了位置の値を取得します。
-	 * 
-	 * @param str 終了位置の値を取得する文字列です。
-	 * @return 指定の文字列の終了位置の値を返します。
-	 */
-	static int getEndIndex(String str) {
-		return str.length();
-	}
 
 	/**
 	 * 現在位置の値を取得します。
@@ -207,6 +205,36 @@ class StringEnumerator {
 	}
 	
 	/**
+	 * 現在の開始位置から一致を調べられるかどうかを返します。
+	 * 
+	 * @return 現在の開始位置から一致を調べられるならば {@code true} を、
+	 * 		調べられなければ {@code false} を返します。
+	 */
+	boolean hasCurrentStart() {
+		// '$' は文字列の最後に一致するので、文字列の終わりまで調べます。
+		return _startIndex <= _length;
+	}
+	
+	/**
+	 * 開始位置を次の文字に移動します。開始位置が一致を調べられる範囲を越えている場合、
+	 * 開始位置はそれ以上移動しません。
+	 */
+	void moveNextStart() {
+		if (hasCurrentStart()) {
+			setStartAndCurrentIndex(_startIndex + 1);
+		}
+	}
+	
+	/**
+	 * 開始位置の値を取得します。
+	 * 
+	 * @return 開始位置の値を返します。
+	 */
+	int getStartIndex() {
+		return _startIndex;
+	}
+	
+	/**
 	 * 開始位置から現在位置までの部分文字列を取得します。
 	 * 
 	 * @return 開始位置から現在位置までの部分文字列を返します。
@@ -230,7 +258,7 @@ class StringEnumerator {
 	 * @param state 列挙子を状態を保存した {@link EnumeratorState} クラスのオブジェクトです。
 	 */
 	void restoreState(EnumeratorState state) {
-		_currentIndex = state.getCurrentIndex();
+		setCurrentIndex(state.getCurrentIndex());
 	}
 	
 	/**
@@ -238,7 +266,9 @@ class StringEnumerator {
 	 */
 	@Override
 	public String toString() {
-		return String.format("_currentIndex=%d, rest=%s", _currentIndex, getRest());
+		return String.format(
+				"_startIndex=%d, _currentIndex=%d, rest=%s",
+				_startIndex, _currentIndex, getRest());
 	}
 	
 	private String getRest() {
@@ -247,5 +277,24 @@ class StringEnumerator {
 	
 	private int getEndIndex() {
 		return Math.min(_currentIndex, _length);
+	}
+	
+	/**
+	 * 開始位置を設定します。単体テストで使うためのメソッドです。
+	 * 現在位置も開始位置と同じ値に設定されます。
+	 * 
+	 * @param startIndex 設定する開始位置の値を指定します。
+	 */
+	void setStartIndexForUnitTest(int startIndex) {
+		setStartAndCurrentIndex(startIndex);
+	}
+	
+	/**
+	 * 現在位置を設定します。単体テストで使うためのメソッドです。
+	 * 
+	 * @param currentIndex 設定する現在位置の値を指定します。
+	 */
+	void setCurrentIndexForUnitTest(int currentIndex) {
+		setCurrentIndex(currentIndex);
 	}
 }

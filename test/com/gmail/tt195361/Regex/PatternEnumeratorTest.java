@@ -18,8 +18,8 @@ public class PatternEnumeratorTest {
 		_pat2 = new OneCharPattern('a');
 		_pat3 = new EndOfStringPattern();
 		
-		_threePatEnum = PatternEnumerator.makeForUnitTest(_pat1, _pat2, _pat3);
-		_emptyPatEnum = PatternEnumerator.makeForUnitTest();
+		_threePatEnum = PatternEnumeratorTest.make(_pat1, _pat2, _pat3);
+		_emptyPatEnum = PatternEnumeratorTest.make();
 	}
 	
 	@Test
@@ -81,5 +81,9 @@ public class PatternEnumeratorTest {
 		
 		assertFalse("expected ‚É•¶Œ^‚ª‚È‚¢‚Í‚¸: " + message, expected.hasCurrent());
 		assertFalse("actual ‚É•¶Œ^‚ª‚È‚¢‚Í‚¸:" + message, actual.hasCurrent());
+	}
+
+	static PatternEnumerator make(RegexPattern...patterns) {
+		return new PatternEnumerator(patterns);
 	}
 }

@@ -7,13 +7,19 @@ public class MatchResultTest {
 	
 	@Test
 	public void testSuccessResult() {
-		final int StartIndex = 3;
-		final String MatchString = "abcde";
+		final String Str = "abcde";
+		final int StartIndex = 1;
+		final int CurrentIndex = 4;
+		final String MatchString = "bcd";
 		
-		MatchResult result = MatchResult.makeSuccessResult(StartIndex, MatchString);
+		StringEnumerator strEnum = new StringEnumerator(Str);
+		strEnum.setStartIndexForUnitTest(StartIndex);
+		strEnum.setCurrentIndexForUnitTest(CurrentIndex);
+		
+		MatchResult result = MatchResult.makeSuccessResult(strEnum);
 		check(
 				result, true, StartIndex, MatchString,
-				"¬Œ÷‚ÌŒ‹‰Ê -> isSuccess=true, startIndex ‚Æ matchString ‚Íˆø”‚ÅŽw’è‚Ì’l");
+				"¬Œ÷‚ÌŒ‹‰Ê -> isSuccess=true, startIndex ‚Æ matchString ‚Í strEnum ‚ÉŠi”[‚³‚ê‚½’l");
 	}
 	
 	@Test

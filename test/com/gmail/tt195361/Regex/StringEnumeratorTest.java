@@ -19,8 +19,8 @@ public class StringEnumeratorTest {
 
 	private void checkIsStart(
 			String str, Boolean[] expectedArray, String message) {
-		checkFunction(
-				(strEnum) -> (Boolean)strEnum.isStart(),
+		checkCurrentFunction(
+				(strEnum) -> strEnum.isStart(),
 				str, expectedArray, message);
 	}
 	
@@ -36,8 +36,8 @@ public class StringEnumeratorTest {
 
 	private void checkIsLast(
 			String str, Boolean[] expectedArray, String message) {
-		checkFunction(
-				(strEnum) -> (Boolean)strEnum.isLast(),
+		checkCurrentFunction(
+				(strEnum) -> strEnum.isLast(),
 				str, expectedArray, message);
 	}
 	
@@ -53,8 +53,8 @@ public class StringEnumeratorTest {
 
 	private void checkIsEnd(
 			String str, Boolean[] expectedArray, String message) {
-		checkFunction(
-				(strEnum) -> (Boolean)strEnum.isEnd(),
+		checkCurrentFunction(
+				(strEnum) -> strEnum.isEnd(),
 				str, expectedArray, message);
 	}
 	
@@ -70,8 +70,8 @@ public class StringEnumeratorTest {
 	
 	private void checkHasCurrent(
 			String str, Boolean[] expectedArray, String message) {
-		checkFunction(
-				(strEnum) -> (Boolean)strEnum.hasCurrent(),
+		checkCurrentFunction(
+				(strEnum) -> strEnum.hasCurrent(),
 				str, expectedArray, message);
 	}
 	
@@ -87,8 +87,8 @@ public class StringEnumeratorTest {
 	
 	private void checkHasCurrentOrEnd(
 			String str, Boolean[] expectedArray, String message) {
-		checkFunction(
-				(strEnum) -> (Boolean)strEnum.hasCurrentOrEnd(),
+		checkCurrentFunction(
+				(strEnum) -> strEnum.hasCurrentOrEnd(),
 				str, expectedArray, message);
 	}
 	
@@ -104,8 +104,8 @@ public class StringEnumeratorTest {
 	
 	private void checkGetCurrentIndex(
 			String str, Integer[] expectedArray, String message) {
-		checkFunction(
-				(strEnum) -> (Integer)strEnum.getCurrentIndex(),
+		checkCurrentFunction(
+				(strEnum) -> strEnum.getCurrentIndex(),
 				str, expectedArray, message);
 	}
 	
@@ -121,8 +121,8 @@ public class StringEnumeratorTest {
 	
 	private void checkGetCurrent(
 			String str, Character[] expectedArray, String message) {
-		checkFunction(
-				(strEnum) -> (Character)strEnum.getCurrent(),
+		checkCurrentFunction(
+				(strEnum) -> strEnum.getCurrent(),
 				str, expectedArray, message);
 	}
 	
@@ -138,21 +138,72 @@ public class StringEnumeratorTest {
 	
 	private void checkGetSubstring(
 			String str, String[] expectedArray, String message) {
-		checkFunction(
+		checkCurrentFunction(
 				(strEnum) -> strEnum.getSubstring(),
+				str, expectedArray, message);
+	}
+	
+	@Test
+	public void hasCurrentStart() {
+		checkHasCurrentStart(
+				"abc", new Boolean[] { true, true, true, true, false },
+				"開始位置に文字があるか文字列の終わり -> true, 終わりを越えた -> false");
+		checkHasCurrentStart(
+				"", new Boolean[] { true, false },
+				"空文字列は最初が文字列の終わり -> true, 終わりを越えた -> false");
+	}
+	
+	private void checkHasCurrentStart(
+			String str, Boolean[] expectedArray, String message) {
+		checkStartFunction(
+				(strEnum) -> strEnum.hasCurrentStart(),
+				str, expectedArray, message);
+	}
+	
+	@Test
+	public void getStartIndex() {
+		checkGetStartIndex(
+				"abc", new Integer[] { 0, 1, 2, 3, 4, 4, 4 },
+				"moveNextStart() を呼ぶと開始位置が一つずつ移動し、最後を越えるとそれ以上移動しない");
+		checkGetStartIndex(
+				"", new Integer[] { 0, 1, 1, 1 },
+				"空文字列は最初から文字列の終わりで、それを越えるとそれ以上移動しない");
+	}
+	
+	private void checkGetStartIndex(
+			String str, Integer[] expectedArray, String message) {
+		checkStartFunction(
+				(strEnum) -> strEnum.getStartIndex(),
+				str, expectedArray, message);
+	}
+	
+	private <R> void checkCurrentFunction(
+			Function<StringEnumerator, R> checkFunc,
+			String str, R[] expectedArray, String message) {
+		checkFunction(
+				checkFunc, (strEnum) -> strEnum.moveNext(),
+				str, expectedArray, message);
+	}
+	
+	private <R> void checkStartFunction(
+			Function<StringEnumerator, R> checkFunc,
+			String str, R[] expectedArray, String message) {
+		checkFunction(
+				checkFunc, (strEnum) -> strEnum.moveNextStart(),
 				str, expectedArray, message);
 	}
 	
 	private <R> void checkFunction(
 			Function<StringEnumerator, R> checkFunc,
+			Consumer<StringEnumerator> moveFunc,
 			String str, R[] expectedArray, String message) {
-		StringEnumerator strEnum = new StringEnumerator(str, 0);
+		StringEnumerator strEnum = new StringEnumerator(str);
 		
 		for (R expected: expectedArray) {
 			R actual = checkFunc.apply(strEnum);
 			assertEquals(message, expected, actual);
 			
-			strEnum.moveNext();
+			moveFunc.accept(strEnum);
 		}
 	}
 }

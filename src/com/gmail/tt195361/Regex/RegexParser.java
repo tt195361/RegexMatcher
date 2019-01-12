@@ -28,7 +28,7 @@ class RegexParser {
 	 * @return 指定の文字列を解釈した結果を表わす {@link PatternEnumerator} クラスのオブジェクトを返します。
 	 */
 	static PatternEnumerator parse(String pattern) {
-		StringEnumerator strEnum = new StringEnumerator(pattern, 0);
+		StringEnumerator strEnum = new StringEnumerator(pattern);
 		List<RegexPattern> patList = new ArrayList<RegexPattern>();
 		RegexPattern lastPat = null;
 
@@ -52,7 +52,8 @@ class RegexParser {
 		}
 		
 		// 正規表現文型のリストから列挙子を作成して返します。
-		return new PatternEnumerator(patList);
+		RegexPattern[] patArray = new RegexPattern[patList.size()];
+		return new PatternEnumerator(patList.toArray(patArray));
 	}
 	
 	// 文字列の現在位置から正規表現文型を解釈し、解釈結果を返します。

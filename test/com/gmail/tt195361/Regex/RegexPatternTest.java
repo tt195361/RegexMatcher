@@ -35,8 +35,8 @@ class RegexPatternTest {
 	static void checkOneMatch(
 			RegexPattern regexPat, String str,
 			boolean expectedResult, int expectedCurrentIndex, String message) {
-		PatternEnumerator patEnum = PatternEnumerator.makeForUnitTest(regexPat);
-		StringEnumerator strEnum = new StringEnumerator(str, 0);
+		PatternEnumerator patEnum = PatternEnumeratorTest.make(regexPat);
+		StringEnumerator strEnum = new StringEnumerator(str);
 		
 		boolean actualResult = regexPat.oneMatch(patEnum, strEnum);
 		assertEquals("Result: " + message, expectedResult, actualResult);
