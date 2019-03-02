@@ -144,19 +144,19 @@ public class StringEnumeratorTest {
 	}
 	
 	@Test
-	public void hasCurrentStart() {
-		checkHasCurrentStart(
+	public void hasValidStart() {
+		checkHasValidStart(
 				"abc", new Boolean[] { true, true, true, true, false },
 				"開始位置に文字があるか文字列の終わり -> true, 終わりを越えた -> false");
-		checkHasCurrentStart(
+		checkHasValidStart(
 				"", new Boolean[] { true, false },
 				"空文字列は最初が文字列の終わり -> true, 終わりを越えた -> false");
 	}
 	
-	private void checkHasCurrentStart(
+	private void checkHasValidStart(
 			String str, Boolean[] expectedArray, String message) {
 		checkStartFunction(
-				(strEnum) -> strEnum.hasCurrentStart(),
+				(strEnum) -> strEnum.hasValidStart(),
 				str, expectedArray, message);
 	}
 	

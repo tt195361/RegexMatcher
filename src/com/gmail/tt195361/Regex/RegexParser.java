@@ -4,6 +4,97 @@ import java.util.*;
 
 /**
  * 文字列を正規表現の文型の指定として解釈します。
+ * 
+ * <h1 id="取り扱う正規表現">取り扱う正規表現</h1>
+ * <p>
+ * このプログラムで取り扱う正規表現の文型を、次の表にまとめます。
+ * <table
+ * 		border="1" rules="all"
+ * 		summary="このプログラムで取り扱う正規表現の文型">
+ *   <tr align="center" bgcolor="lightgray">
+ *     <th>文型</th>
+ *     <th>一致する対象</th>
+ *     <th>現れる文脈</th>
+ *     <th>呼び方</th>
+ *     <th>使用例</th>
+ *     <th>一致例</th>
+ *   </tr>
+ *   <tr>
+ *     <td align="center">{@code .}</td>
+ *     <td>任意の 1 文字</td>
+ *     <td>どこでもよい</td>
+ *     <td>任意の 1 文字</td>
+ *     <td align="center">{@code .}</td>
+ *     <td>{@code a, A, 0, ...}</td>
+ *   </tr>
+ *   <tr>
+ *     <td align="center">{@code ^}</td>
+ *     <td>文字列の最初</td>
+ *     <td>正規表現の最初</td>
+ *     <td>文字列の最初</td>
+ *     <td align="center">{@code ^a}</td>
+ *     <td>{@code a, ab, abc, ...}</td>
+ *   </tr>
+ *   <tr>
+ *     <td align="center">{@code $}</td>
+ *     <td>文字列の最後</td>
+ *     <td>正規表現の最後</td>
+ *     <td>文字列の最後</td>
+ *     <td align="center">{@code z$}</td>
+ *     <td>{@code z, yz, xyz, ...}</td>
+ *   </tr>
+ *   <tr>
+ *     <td align="center">{@code [ ]}</td>
+ *     <td>指定の文字の中の 1 文字</td>
+ *     <td rowspan="2">どこでもよい</td>
+ *     <td rowspan="2">文字クラス</td>
+ *     <td align="center">{@code [a-z]}</td>
+ *     <td>{@code a, b, c, ..., z}</td>
+ *   </tr>
+ *   <tr>
+ *     <td align="center">{@code [^ ]}</td>
+ *     <td>指定の文字の中の 1 文字以外</td>
+ *     <td align="center">{@code [^a-z]}</td>
+ *     <td>{@code A, B, ..., 0, 1, ..., !, $, ...}</td>
+ *   </tr>
+ *   <tr>
+ *     <td align="center">{@code *}</td>
+ *     <td>この前の文型の 0 回以上の繰り返し</td>
+ *     <td>他の文型の後</td>
+ *     <td>閉包</td>
+ *     <td align="center">{@code a*}</td>
+ *     <td>{@code "", a, aa, aaa, ...}</td>
+ *   </tr>
+ *   <tr>
+ *     <td align="center">上記以外の文字</td>
+ *     <td>その文字自身</td>
+ *     <td>どこでもよい</td>
+ *     <td>指定の 1 文字</td>
+ *     <td align="center">{@code a}</td>
+ *     <td>{@code a}</td>
+ *   </tr>
+ * </table>
+ * 
+ * <h1 id="特別な意味の打ち消し">特別な意味の打ち消し</h1>
+ * <p>
+ * 特別な意味を持つ文字をその文字自身として取り扱うには、その文字の前に {@code \} を置きます。
+ * たとえば {@code \.} は、{@code .} の特別な意味を打ち消し、{@code .} 自身
+ * として取り扱います。また、{@code \\} は {@code \} を意味します。
+ * {@code [ ]} 内、あるいは {@code [^ ]} 内では、{@code \} は取り扱いません。
+ * 
+ * <h1 id="一致の詳細">一致の詳細</h1>
+ * <p>
+ * 正規表現と文字列の一致は、以下のように取り扱います。
+ * <ul>
+ *   <li id="最左一致">最左一致 -- 文字列のなるべく左から一致させます。
+ *   	たとえば、正規表現 {@code "aa"} は、文字列
+ *   	{@code "aabaac"} と、開始位置 0 と 3 の 2 個所で一致しますが、より左の開始位置 0 から
+ *   	一致させます。</li>
+ *   <li>最長一致 -- 文字列のなるべく長い部分と一致させます。たとえば、正規表現 {@code "a*"} は
+ *   	文字列 {@code "aaa"} に対して、{@code ""}、{@code "a"}、
+ *      {@code "aa"}、{@code "aaa"} の 4 通りの一致が考えられます。
+ *   	この中で、一致する文字列が一番長い {@code "aaa"} を結果とします。</li>
+ * </ul>
  */
 class RegexParser {
 	
@@ -15,7 +106,8 @@ class RegexParser {
 	private static final char CharClassStart = '[';
 	private static final char Escape = '\\';
 
-	// このクラスは static メソッドだけなので、コンストラクタを private にして、インスタンスを作れないようにします。 
+	// このクラスは static メソッドだけなので、コンストラクタを private にして、
+	// インスタンスを作れないようにします。 
 	private RegexParser() {
 		//
 	}
@@ -25,7 +117,8 @@ class RegexParser {
 	 * {@link PatternEnumerator} クラスのオブジェクトを返します。
  	 *  
 	 * @param pattern 正規表現の文型を指定する文字列です。
-	 * @return 指定の文字列を解釈した結果を表わす {@link PatternEnumerator} クラスのオブジェクトを返します。
+	 * @return 指定の文字列を解釈した結果として作成した
+	 * 		{@link PatternEnumerator} クラスのオブジェクトを返します。
 	 */
 	static PatternEnumerator parse(String pattern) {
 		StringEnumerator strEnum = new StringEnumerator(pattern);
@@ -42,7 +135,8 @@ class RegexParser {
 				patList.remove(lastPat);
 			}
 			
-			// 解釈した結果から作成した正規表現文型をリストに追加し、lastPat に一つ前の文型として記録します。
+			// 解釈した結果から作成した正規表現文型をリストに追加し、
+			// lastPat に一つ前の文型として記録します。
 			RegexPattern parsedPattern = patParseResult.getPattern();
 			patList.add(parsedPattern);
 			lastPat = parsedPattern;
@@ -76,18 +170,21 @@ class RegexParser {
 			pattern = new EndOfStringPattern();
 		}
 		else if (ch == Closure && lastPat != null) {
-			// '*' でその前に文型がある場合は、その文型を 0 回以上繰り返す ClosurePattern です。
-			// 一つ前の文型は ClosurePattern に取り込むので、リストから削除します。
+			// '*' でその前に文型がある場合は、その文型を 0 回以上繰り返す
+			// ClosurePattern です。一つ前の文型は ClosurePattern に取り込むので、
+			// リストから削除します。
 			pattern = new ClosurePattern(lastPat);
 			removeLastPat = true;
 		}
 		else if (ch == CharClassStart && !strEnum.isLast()) {
-			// '[' が文型の最後でなければ、以降を文字クラスとして解釈し、CharClassParser を作成します。
+			// '[' が文型の最後でなければ、以降を文字クラスとして解釈し、
+			// CharClassPattern を作成します。
 			CharClassParser charClassParser = new CharClassParser();
 			pattern =  charClassParser.parse(strEnum);
 		}
 		else {
-			// それ以外は、その文字自身を意味する OneCharPattern です。エスケープされている場合を考慮します。
+			// それ以外は、その文字自身を意味する OneCharPattern です。
+			// エスケープされている場合を考慮します。
 			char escCh = parseEscapeChar(ch, strEnum);
 			pattern = new OneCharPattern(escCh);
 		}
