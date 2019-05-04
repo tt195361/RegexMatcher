@@ -156,7 +156,7 @@ public class RegexMatcher {
 	 * @return 一致を調べた結果を格納する {@link MatchResult} クラスのオブジェクトを返します。
 	 */
 	public MatchResult match(String str) {
-		StringEnumerator strEnum = new StringEnumerator(str);
+		StringEnumerator strEnum = StringEnumerator.makeForMatch(str);
 
 		// 指定の文字列に有効な開始位置が存在する間、一致を調べます。
 		while (strEnum.hasValidStart()) {
@@ -189,8 +189,8 @@ public class RegexMatcher {
 		// 正規表現文型が存在する間、繰り返します。
 		while (patEnum.hasCurrent()) {
 
-			// 正規表現文型がまだ存在するにもかかわらず、文字列の終わりを越えていれば、一致は失敗です。
-			if (!strEnum.hasCurrentOrEnd()) {
+			// 正規表現文型がまだ存在するにもかかわらず、もう文字がなければ、一致は失敗です。
+			if (!strEnum.hasCurrent()) {
 				return false;
 			}
 			

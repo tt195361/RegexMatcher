@@ -12,7 +12,7 @@ public class MatchResultTest {
 		final int CurrentIndex = 4;
 		final String MatchString = "bcd";
 		
-		StringEnumerator strEnum = new StringEnumerator(Str);
+		StringEnumerator strEnum = StringEnumerator.makeForMatch(Str);
 		strEnum.setStartIndexForUnitTest(StartIndex);
 		strEnum.setCurrentIndexForUnitTest(CurrentIndex);
 		

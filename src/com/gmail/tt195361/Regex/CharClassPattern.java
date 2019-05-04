@@ -165,7 +165,7 @@ class CharClassPattern extends RegexPattern {
 	 */
 	@Override
 	boolean oneMatch(PatternEnumerator patEnum, StringEnumerator strEnum) {
-		if (!strEnum.hasCurrent()) {
+		if (!strEnum.hasChar()) {
 			return false;
 		}
 		

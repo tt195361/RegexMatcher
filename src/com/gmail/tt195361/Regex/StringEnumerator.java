@@ -68,7 +68,7 @@ package com.gmail.tt195361.Regex;
  * </ul>
  * <p>
  * {@link #moveNext()} メソッドの実装を、次に示します。
- * {@link #hasCurrentOrEnd()} メソッドを使って、
+ * {@link #hasCurrent()} メソッドを使って、
  * 現在位置に文字があるか、あるいは文字列の終わりであることを調べ、
  * この条件が満たされていれば現在位置を 1 つ進めます。
  * <pre>
@@ -94,7 +94,7 @@ package com.gmail.tt195361.Regex;
  *     <td>現在位置に文字があるかどうかを調べます。</td>
  *   </tr>
  *   <tr>
- *     <td>{@link #hasCurrentOrEnd()}</td>
+ *     <td>{@link #hasCurrent()}</td>
  *     <td>現在位置に文字があるか、あるいは、現在位置が
  *         文字列の終わりかを調べます。このメソッドは、
  *         正規表現文型の一致を調べるときに使います。
@@ -116,7 +116,7 @@ package com.gmail.tt195361.Regex;
         }
  * </pre>
  * <p>
- * {@link #hasCurrentOrEnd()} メソッドは、次に示すように、
+ * {@link #hasCurrent()} メソッドは、次に示すように、
  * {@link #hasCurrent()} と {@link #isEnd()} を使います。
  * <pre>
         boolean hasCurrentOrEnd() {
@@ -167,7 +167,7 @@ package com.gmail.tt195361.Regex;
  *   <tr　align="center">
  *     <th>{@link #moveNext}<br>呼び出し回数</th>
  *     <th>{@link #hasCurrent}</th>
- *     <th>{@link #hasCurrentOrEnd}</th>
+ *     <th>{@link #hasCurrent}</th>
  *     <th>{@link #getCurrent}</th>
  *     <th>{@link #isStart}</th>
  *     <th>{@link #isLast}</th>
@@ -286,41 +286,64 @@ package com.gmail.tt195361.Regex;
  * <p>
  * TODO: 説明を追加する。
  */
-class StringEnumerator {
-	
-	// メンバー変数: 文字列、文字列の長さ、開始位置、現在位置を保持します。
-	private final String _str;
-	private final int _length;
-	private int _startIndex;
-	private int _currentIndex;
+class StringEnumerator extends Enumerator<Character> {
 	
 	/**
-	 * 指定の文字列のそれぞれの文字を列挙する列挙子を作成します。
+	 * 指定の文字列の文字を順に列挙する列挙子を、文字列の解釈用として作成します。
 	 * 
-	 * @param str それぞれの文字を列挙する文字列です。
+	 * @param str 列挙する文字を含む文字列です。
+	 * @return 作成した列挙子 {@link StringEnumerator} のオブジェクトを返します。
 	 */
-	StringEnumerator(String str) {
+	static StringEnumerator makeForParse(String str) {
+		// 文字列の解釈の場合は、文字列中の文字を列挙するだけです。
+		int enumLength = str.length();
+		return new StringEnumerator(str, enumLength);
+	}
+	
+	/**
+	 * 指定の文字列の文字を順に列挙する列挙子を、一致の検索用として作成します。
+	 * 
+	 * @param str 列挙する文字を含む文字列です。
+	 * @return 作成した列挙子 {@link StringEnumerator} のオブジェクトを返します。
+	 */
+	static StringEnumerator makeForMatch(String str) {
+		// 一致を調べる場合は、文字列の最後に一致する "$" のため、
+		// 文字列中の文字に加えて、もう 1 文字列挙します。
+		int enumLength = str.length() + 1;
+		return new StringEnumerator(str, enumLength);
+		
+	}
+	
+	// メンバー変数: 文字列、文字列の長さ、開始位置を保持します。
+	private final String _str;
+	private final int _strLength;
+	private int _startIndex;
+	
+	private StringEnumerator(String str, int enumLength) {
+		super(enumLength);
 		_str = str;
-		_length = str.length();
+		_strLength = str.length();
 		setStartAndCurrentIndex(0);
 	}
 	
-	private void setStartAndCurrentIndex(int value) {
-		_startIndex = _currentIndex = value;
-	}
-	
-	private void setCurrentIndex(int value) {
-		_currentIndex = value;
-	}
-	
-	/**
-	 * 現在位置を次の文字に移動します。現在位置が文字列の終わりを越えている場合、
-	 * 現在位置はそれ以上移動しません。
-	 */
-	void moveNext() {
-		if (hasCurrentOrEnd()) {
-			setCurrentIndex(_currentIndex + 1);
+	@Override
+	protected Character getElementAt(int index) {
+		if (hasCharAt(index)) {
+			return _str.charAt(index);
 		}
+		else {
+			return getNullElement();
+		}
+	}
+	
+	@Override
+	protected Character getNullElement() {
+		return '\0';
+	}
+	
+	private void setStartAndCurrentIndex(int value) {
+		setCurrentIndex(value);
+		_startIndex = value;
 	}
 	
 	/**
@@ -329,44 +352,13 @@ class StringEnumerator {
 	 * @return 現在位置に文字があれば {@code true} を、
 	 * 		文字がなければ {@code false} を返します。
 	 */
-	boolean hasCurrent() {
-		return 0 <= _currentIndex && _currentIndex < _length;
+	boolean hasChar() {
+		int currentIndex = getCurrentIndex();
+		return hasCharAt(currentIndex);
 	}
 	
-	/**
-	 * 現在位置に文字があるか、あるいは、現在位置が文字列の終わりかを調べます。
-	 * 
-	 * @return　現在位置に文字があるか、あるいは、
-	 * 		文字列の終わりである場合は {@code true} を、
-	 * 		それ以外の場合は {@code false} を返します。
-	 */
-	boolean hasCurrentOrEnd() {
-		return hasCurrent() || isEnd();
-	}
-
-	/**
-	 * 現在位置の値を取得します。
-	 * 
-	 * @return 現在位置の値を返します。
-	 */
-	int getCurrentIndex() {
-		return _currentIndex;
-	}
-
-	/**
-	 * 現在位置の文字を取得します。
-	 * 
-	 * @return 現在位置の文字を返します。現在位置が文字列の終わり、
-	 * 		あるいは終わりを越えた位置にあり、
-	 * 		その位置に文字がない場合は {@code '\0'} を返します。
-	 */
-	char getCurrent() {
-		if (!hasCurrent()) {
-			return '\0';
-		}
-		else {
-			return _str.charAt(_currentIndex);
-		}
+	private boolean hasCharAt(int index) {
+		return 0 <= index && index < _strLength;
 	}
 	
 	/**
@@ -376,7 +368,7 @@ class StringEnumerator {
 	 * 		最初でなければ {@code false} を返します。
 	 */
 	boolean isStart() {
-		return _currentIndex == 0;
+		return getCurrentIndex() == 0;
 	}
 	
 	/**
@@ -386,7 +378,7 @@ class StringEnumerator {
 	 * 		最後でなければ {@code false} を返します。
 	 */
 	boolean isLast() {
-		return _currentIndex == _length - 1;
+		return getCurrentIndex() == _strLength - 1;
 	}
 	
 	/**
@@ -396,7 +388,7 @@ class StringEnumerator {
 	 * 		終わりでなければ {@code false} を返します。
 	 */
 	boolean isEnd() {
-		return _currentIndex == _length;
+		return getCurrentIndex() == _strLength;
 	}
 	
 	/**
@@ -407,7 +399,7 @@ class StringEnumerator {
 	 */
 	boolean hasValidStart() {
 		// '$' は文字列の最後に一致するので、文字列の終わりまで調べます。
-		return _startIndex <= _length;
+		return _startIndex <= _strLength;
 	}
 	
 	/**
@@ -439,35 +431,13 @@ class StringEnumerator {
 	}
 	
 	/**
-	 * 列挙子の現在の状態を保存した {@link EnumeratorState} クラスの
-	 * オブジェクトを作成します。
-	 * 
-	 * @return 列挙子の現在の状態を保存した {@link EnumeratorState} クラスの
-	 * 		オブジェクトを返します。
-	 */
-	EnumeratorState saveState() {
-		return new EnumeratorState(_currentIndex);
-	}
-
-	/**
-	 * 列挙子の状態を指定の {@link EnumeratorState} クラスのオブジェクトが
-	 * 保存した状態に戻します。
-	 * 
-	 * @param state 列挙子を状態を保存した {@link EnumeratorState} クラスの
-	 * 		オブジェクトです。
-	 */
-	void restoreState(EnumeratorState state) {
-		setCurrentIndex(state.getCurrentIndex());
-	}
-	
-	/**
 	 * {@link StringEnumerator} クラスのオブジェクトの文字列表現を返します。
 	 */
 	@Override
 	public String toString() {
 		return String.format(
 				"_startIndex=%d, _currentIndex=%d, rest=%s",
-				_startIndex, _currentIndex, getRest());
+				_startIndex, getCurrentIndex(), getRest());
 	}
 	
 	private String getRest() {
@@ -475,7 +445,7 @@ class StringEnumerator {
 	}
 	
 	private int getEndIndex() {
-		return Math.min(_currentIndex, _length);
+		return Math.min(getCurrentIndex(), _strLength);
 	}
 	
 	/**

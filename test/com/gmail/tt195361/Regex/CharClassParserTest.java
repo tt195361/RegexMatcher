@@ -106,7 +106,7 @@ public class CharClassParserTest {
 	}
 	
 	private void checkParse(String pattern, CharClassPattern expected, String message) {
-		StringEnumerator strEnum = new StringEnumerator(pattern);
+		StringEnumerator strEnum = StringEnumerator.makeForParse(pattern);
 		CharClassParser target = new CharClassParser();
 		CharClassPattern actual = target.parse(strEnum);
 		CharClassPatternTest.check(expected, actual, message);

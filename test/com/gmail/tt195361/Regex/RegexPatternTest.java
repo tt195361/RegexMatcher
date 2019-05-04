@@ -36,7 +36,7 @@ class RegexPatternTest {
 			RegexPattern regexPat, String str,
 			boolean expectedResult, int expectedCurrentIndex, String message) {
 		PatternEnumerator patEnum = PatternEnumeratorTest.make(regexPat);
-		StringEnumerator strEnum = new StringEnumerator(str);
+		StringEnumerator strEnum = StringEnumerator.makeForMatch(str);
 		
 		boolean actualResult = regexPat.oneMatch(patEnum, strEnum);
 		assertEquals("Result: " + message, expectedResult, actualResult);

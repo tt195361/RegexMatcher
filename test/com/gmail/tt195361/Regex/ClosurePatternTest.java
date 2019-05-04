@@ -127,7 +127,7 @@ public class ClosurePatternTest {
 			PatternEnumerator patEnum, String str, int startIndex, boolean expectedResult,
 			String expectedSubstring, String message) {
 		ClosurePattern closurePat = (ClosurePattern)patEnum.getCurrent();
-		StringEnumerator strEnum = new StringEnumerator(str);
+		StringEnumerator strEnum = StringEnumerator.makeForMatch(str);
 		strEnum.setStartIndexForUnitTest(startIndex);
 		
 		boolean actualResult = closurePat.oneMatch(patEnum, strEnum);

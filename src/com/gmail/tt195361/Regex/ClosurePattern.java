@@ -330,7 +330,7 @@ class ClosurePattern extends RegexPattern {
 
 		// ŒJ‚è•Ô‚·•¶Œ^‚ª•¶š—ñ‚Æ‚Ç‚±‚Ü‚Åˆê’v‚·‚é‚©’²‚×A•¶š—ñ‚ÌˆÊ’u‚ª
 		// ˆÙ‚È‚é‚È‚ç‚ÎŒó•â‚Æ‚µ‚Ä’Ç‰Á‚µ‚Ü‚·B
-		while (strEnum.hasCurrentOrEnd()) {
+		while (strEnum.hasCurrent()) {
 			if (!_repeatPattern.oneMatch(patEnum, strEnum)) {
 				break;
 			}

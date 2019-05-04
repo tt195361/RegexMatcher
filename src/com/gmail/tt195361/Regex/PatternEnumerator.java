@@ -136,11 +136,10 @@ package com.gmail.tt195361.Regex;
         }
  * </pre>
  */
-class PatternEnumerator {
+class PatternEnumerator extends Enumerator<RegexPattern> {
 
-	// メンバー変数: 列挙する正規表現文型の配列、その現在位置です。
+	// メンバー変数: 列挙する正規表現文型の配列です。
 	private final RegexPattern[] _patterns;
-	private int _currentIndex;
 	
 	/**
 	 * 指定の正規表現文型を列挙する列挙子を作成します。
@@ -148,58 +147,18 @@ class PatternEnumerator {
 	 * @param patterns 列挙する正規表現文型を格納する配列です。
 	 */
 	PatternEnumerator(RegexPattern[] patterns) {
+		super(patterns.length);
 		_patterns = patterns;
-		_currentIndex = 0;
 	}
 	
-	/**
-	 * 現在位置に文型があるかどうかを調べます。
-	 * 
-	 * @return 現在位置に文型がある場合は {@code true} を、文型がない場合は {@code false} を返します。
-	 */
-	boolean hasCurrent() {
-		return 0 <= _currentIndex && _currentIndex < _patterns.length;
+	@Override
+	protected RegexPattern getElementAt(int index) {
+		return _patterns[index];
 	}
 	
-	/**
-	 * 現在位置の文型を取得します。
-	 * 
-	 * @return 現在位置の文型を返します。現在位置に文型がない場合は {@code null} を返します。
-	 */
-	RegexPattern getCurrent() {
-		if (!hasCurrent()) {
-			return null;
-		}
-		else {
-			return _patterns[_currentIndex];
-		}
-	}
-	
-	/**
-	 * 現在位置を次の文型に移動します。現在位置に文型がない場合は、現在位置をそれ以上移動しません。
-	 */
-	void moveNext() {
-		if (hasCurrent()) {
-			++_currentIndex;
-		}
-	}
-	
-	/**
-	 * 列挙子の現在の状態を保存した {@link EnumeratorState} クラスのオブジェクトを作成します。
-	 * 
-	 * @return 列挙子の現在の状態を保存した {@link EnumeratorState} クラスのオブジェクトを返します。
-	 */
-	EnumeratorState saveState() {
-		return new EnumeratorState(_currentIndex);
-	}
-	
-	/**
-	 * 列挙子の状態を指定の {@link EnumeratorState} クラスのオブジェクトが保存した状態に戻します。
-	 * 
-	 * @param state 列挙子を状態を保存した {@link EnumeratorState} クラスのオブジェクトです。
-	 */
-	void restoreState(EnumeratorState state) {
-		_currentIndex = state.getCurrentIndex();
+	@Override
+	protected RegexPattern getNullElement() {
+		return null;
 	}
 	
 	/**
@@ -208,7 +167,8 @@ class PatternEnumerator {
 	@Override
 	public String toString() {
 		RegexPattern current = getCurrent();
+		int currentIndex = getCurrentIndex();
 		String currentStr = (current == null) ? "NULL" : current.toString();
-		return String.format("_index=%d, current=%s", _currentIndex, currentStr);
+		return String.format("_index=%d, current=%s", currentIndex, currentStr);
 	}
 }

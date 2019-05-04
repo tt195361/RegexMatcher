@@ -160,7 +160,7 @@
  * <p>
  * 一致を調べる第 2 の手順 {@link com.gmail.tt195361.Regex.RegexMatcher#matchFromCurrent(PatternEnumerator, StringEnumerator)} メソッド
  * について説明します。このメソッドが {@code static} になっているのは、閉包の一致を調べるためにも使うためです。
- * {@link com.gmail.tt195361.Regex.StringEnumerator#hasCurrentOrEnd() StringEnumerator.hasCurrentOrEnd()} は、
+ * {@link com.gmail.tt195361.Regex.StringEnumerator#hasCurrent() StringEnumerator.hasCurrentOrEnd()} は、
  * 文字列の現在位置に文字があるか文字列の終わりならば、{@code true} を返します。
  * {@link com.gmail.tt195361.Regex.RegexPattern#oneMatch(PatternEnumerator, StringEnumerator)} は、
  * <a href="#文型の表わし方">文型の表わし方</a> で説明した、{@link com.gmail.tt195361.Regex.RegexPattern} クラスの

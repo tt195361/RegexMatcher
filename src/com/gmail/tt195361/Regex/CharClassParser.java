@@ -12,7 +12,8 @@ class CharClassParser {
 	private static final char CharClassRange = '-';
 	private static final char CharClassEnd = ']';
 	
-	// メンバー変数: パーサーの状態、範囲開始の文字、文字クラスに属する文字を格納する HashSet。
+	// メンバー変数: パーサーの状態、範囲開始の文字、文字クラスに
+	// 属する文字を格納する HashSet。
 	private ParserState _state;
 	private char _startCh;
 	private final HashSet<Character> _charSet;
@@ -32,8 +33,8 @@ class CharClassParser {
 	}
 	
 	/**
-	 * 指定の文字列を文字クラスの指定として解釈し、解釈した内容をもとに作成した {@link CharClassPattern} の
-	 * オブジェクトを返します。
+	 * 指定の文字列を文字クラスの指定として解釈し、解釈した内容をもとに
+	 * 作成した {@link CharClassPattern} のオブジェクトを返します。
 	 *
 	 * <p>
 	 * 文字クラスの文法を、以下の図に示します。
@@ -59,26 +60,32 @@ class CharClassParser {
 	 * }</pre>
 	 * <ul>
 	 *    <li>1 文字だけの指定、</li>
-	 *    <li>あるいは、開始文字に続いて {@code '-'} と終了文字を記述する範囲指定。</li>
+	 *    <li>あるいは、開始文字に続いて {@code '-'} と終了文字を記述する
+	 *    	  範囲指定。</li>
 	 * </ul>
 	 * <p>
 	 * '-', ']', '\' については、以下のように取り扱います。
 	 * <ul>
-	 *   <li>'-' は、ブラケット内の最初 ('^' のすぐ後ろも含む) か最後にあるときは、リテラルとして取り扱います。</li>
-	 *   <li>']' は、ブラケット内の最初 ('^' のすぐ後ろも含む) にあるときは、リテラルとして取り扱います。</li>
+	 *   <li>'-' は、ブラケット内の最初 ('^' のすぐ後ろも含む) か最後に
+	 *       あるときは、リテラルとして取り扱います。</li>
+	 *   <li>']' は、ブラケット内の最初 ('^' のすぐ後ろも含む) にあるときは、
+	 *       リテラルとして取り扱います。</li>
 	 *   <li>'\' (バックスラッシュ) によるエスケープは取り扱いません。</li>
 	 * </ul>
 	 * 
-	 * @param strEnum 解釈する文字列の列挙子です。呼び出し時の現在位置は、文字クラスの指定の最初の文字
-	 * 			であるものとします。 呼び出し後の現在位置は最後に解釈した文字に移動します。
-	 * @return 解釈した内容をもとに作成した {@link CharClassPattern} のオブジェクトを返します。
+	 * @param strEnum 解釈する文字列の列挙子です。呼び出し時の現在位置は、
+	 * 			文字クラスの指定の最初の文字であるものとします。 
+	 * 			呼び出し後の現在位置は最後に解釈した文字に移動します。
+	 * @return 解釈した内容をもとに作成した {@link CharClassPattern} の
+	 * 			オブジェクトを返します。
 	 */
 	CharClassPattern parse(StringEnumerator strEnum) {
 		// 最初の文字をまたぎ越し、次が '^' かどうか調べます。
 		strEnum.moveNext();
 		boolean notContains = parseCharClassNotContains(strEnum);
 		
-		// 現在の文字があり、それが ']' でなければ、状態に応じて読み込み、状態遷移し、次の文字に移動します。
+		// 現在の文字があり、それが ']' でなければ、状態に応じて読み込み、
+		// 状態遷移し、次の文字に移動します。
 		boolean firstChar = true;
 		while (strEnum.hasCurrent()) {
 			char ch = strEnum.getCurrent();
@@ -90,7 +97,8 @@ class CharClassParser {
 			firstChar = false;
 		}
 		
-		// 読み込んだが処理されずに残っている文字があれば _charSet に追加し、CharClassPattern を返します。
+		// 読み込んだが処理されずに残っている文字があれば _charSet に追加し、
+		// CharClassPattern を返します。
 		_state.addRemainingChars();
 		return new CharClassPattern(notContains, _charSet);
 	}
@@ -160,8 +168,8 @@ class CharClassParser {
 				return _rangeReadState;
 			}
 			else {
-				// それ以外ならば、読み込んだ開始文字を 1 文字の指定として _charSet に追加し、
-				// 次の文字は処理せず、初期状態に戻ります。
+				// それ以外ならば、読み込んだ開始文字を 1 文字の指定として
+				// _charSet に追加し、次の文字は処理せず、初期状態に戻ります。
 				_charSet.add(_startCh);
 				return _initialState;
 			}
@@ -178,7 +186,8 @@ class CharClassParser {
 	private class RangeReadState extends ParserState {
 		@Override
 		ParserState read(char ch, StringEnumerator strEnum) {
-			// 終了文字を読み込み、指定範囲の文字を _charSet に追加し、Initial 状態に戻ります。
+			// 終了文字を読み込み、指定範囲の文字を _charSet に追加し、
+			// Initial 状態に戻ります。
 			char endCh = ch;
 			strEnum.moveNext();
 			

@@ -121,7 +121,7 @@ class RegexParser {
 	 * 		{@link PatternEnumerator} クラスのオブジェクトを返します。
 	 */
 	static PatternEnumerator parse(String pattern) {
-		StringEnumerator strEnum = new StringEnumerator(pattern);
+		StringEnumerator strEnum = StringEnumerator.makeForParse(pattern);
 		List<RegexPattern> patList = new ArrayList<RegexPattern>();
 		RegexPattern lastPat = null;
 
